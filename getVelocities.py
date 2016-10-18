@@ -16,7 +16,7 @@ prolog="""
 """
 epilog="""
 **EXAMPLE**
-    getVelocities.py --lat 40 --lon -118 --width 0.5 --height 0.5 -o velocity.kml
+    getVelocities.py --lat 33 --lon -115 --width 2 --height 2 -o velocity.kml
                
 **COPYRIGHT**
     | Copyright 2016, by the California Institute of Technology
@@ -36,6 +36,7 @@ import sys
 import math
 import argparse
 import subprocess
+import urllib.request
 
 def runCmd(cmd):
     '''run a command'''
@@ -65,26 +66,28 @@ def main():
     # Read command line arguments
     parser = _getParser()
     results = parser.parse_args()
+
+    # Set bounds
     latmin = float(results.lat) - float(results.height)/2
     latmax = float(results.lat) + float(results.height)/2
     lonmin = float(results.lon) - float(results.width)/2
     lonmax = float(results.lon) + float(results.width)/2
 
+    # Set scale
     scale = 320 
     if (results.scale != None):
         scale = float(results.scale)
 
+    # Set reference site
     refsite = 'NONE'
     if (results.ref != None):
         refsite = results.ref
 
-    # Read table of velocities and build a kml file
-    runCmd('curl http://sideshow.jpl.nasa.gov/post/tables/table2.html > '+results.output)
-    inFile = open(results.output,'r')
-    lines = inFile.readlines()
-    inFile.close()
+    # Read table of positions and velocities
+    response1 = urllib.request.urlopen('http://sideshow.jpl.nasa.gov/post/tables/table2.html')
+    lines = response1.readall().decode('utf-8').splitlines()
 
-    # Set up reference velocities
+    # Set reference velocities
     reflatv = 0
     reflonv = 0
     for i in range(0,len(lines)):
@@ -101,21 +104,19 @@ def main():
     print("<kml xmlns=\"http://www.opengis.net/kml/2.2\">",file=outFile)
     print(" <Folder>",file=outFile)
 
-    # Add points and linestrings
+    # Add markers and vectors
     for i in range(0,len(lines)):
         test = lines[i].split()
         if (len(test) == 8):
             if (test[1] == 'POS'):
-
                 lon = float(test[3])
                 lat = float(test[2])
                 next = lines[i+1].split()
                 lonv = float(next[3])
                 latv = float(next[2])
-
                 if ((lon > lonmin) & (lon < lonmax) & (lat > latmin) & (lat < latmax)):
 
-
+                    # Draw markers
                     print("  <Placemark>",file=outFile)
                     print("   <description><![CDATA[",file=outFile)
                     print("    <a href=\"http://sideshow.jpl.nasa.gov/post/links/{:s}.html\">".format(test[0]),file=outFile)
@@ -135,7 +136,8 @@ def main():
                     print("    </coordinates>",file=outFile)
                     print("   </Point>",file=outFile)
                     print("  </Placemark>",file=outFile)
-    
+
+                    # Draw vectors 
                     print("  <Placemark>",file=outFile)
                     print("   <Style><LineStyle>",file=outFile)
                     print("    <color>FF14F0FF</color>",file=outFile)
