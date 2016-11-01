@@ -7,10 +7,10 @@ from __future__ import print_function
 
 prolog="""
 **PROGRAM**
-    getCoseismic.py
+    getPostseismic.py
       
 **PURPOSE**
-    Make kml file from coseismic break estimates
+    Make kml file from postseismic break estimates
 
 **USAGE**
 """
@@ -62,6 +62,7 @@ def _getParser():
     parser.add_argument('--width', action='store', dest='width',required=True,help='width in degrees')
     parser.add_argument('--height', action='store', dest='height',required=True,help='height in degrees')
     parser.add_argument('--ct', action='store', dest='ct',required=False,help='coseismic time window in years')
+    parser.add_argument('--pt', action='store', dest='pt',required=False,help='postseismic time window in years')
     parser.add_argument('--scale', action='store', dest='scale',required=False,help='scale for offsets')
     return parser
 
@@ -86,10 +87,15 @@ def main():
         ytime = ytime/(86400.*365.25)
         ytime = ytime + 2000.
 
-    # Set time window
-    ct = 0.05
+    # Set coseismic window
+    ct = .05 
     if (results.ct != None):
         ct = float(results.ct)
+
+    # Set coseismic window
+    pt = 1 
+    if (results.pt != None):
+        pt = float(results.pt)
 
     # Set scale
     scale = 320 
@@ -123,7 +129,7 @@ def main():
                     for j in range(0,len(breaks)):
                         test2 = breaks[j].split()
                         if (len(test2) == 8):
-                            if ((test2[0] == test[0]) & (float(test2[1]) > ytime-(ct/2)) & (float(test2[1]) < ytime+(ct/2))):
+                            if ((test2[0] == test[0]) & (float(test2[1]) > ytime+(ct/2)) & (float(test2[1]) < ytime+(ct/2)+pt)):
                                 lonv = lonv + float(test2[3])
                                 latv = latv + float(test2[2])
 
@@ -149,7 +155,7 @@ def main():
                     # Draw vector    
                     print("  <Placemark>",file=outFile)
                     print("   <Style><LineStyle>",file=outFile)
-                    print("    <color>FF1400FF</color>",file=outFile)
+                    print("    <color>FF0078F0</color>",file=outFile)
                     print("    <width>2</width>",file=outFile)
                     print("   </LineStyle></Style>",file=outFile)
                     print("   <LineString>",file=outFile)
