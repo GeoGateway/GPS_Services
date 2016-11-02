@@ -52,13 +52,13 @@ def runCmd(cmd):
 def _getParser():
     parser = argparse.ArgumentParser(description=prolog,epilog=epilog,
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('-o', action='store', dest='output',required=True,help='output stacov file')
-    parser.add_argument('--lat', action='store', dest='lat',required=True,help='center latitude in degress')
+    parser.add_argument('-o', action='store', dest='output',required=True,help='output kml file')
+    parser.add_argument('--lat', action='store', dest='lat',required=True,help='center latitude in degrees')
     parser.add_argument('--lon', action='store', dest='lon',required=True,help='center longitude in degrees')
     parser.add_argument('--width', action='store', dest='width',required=True,help='width in degrees')
     parser.add_argument('--height', action='store', dest='height',required=True,help='height in degrees')
-    parser.add_argument('--scale', action='store', dest='scale',required=False,help='optional scale for velocities')
-    parser.add_argument('--ref', action='store', dest='ref',required=False,help='optional reference site for velocities')
+    parser.add_argument('--scale', action='store', dest='scale',required=False,help='scale for velocities in mm/yr/deg')
+    parser.add_argument('--ref', action='store', dest='ref',required=False,help='reference site')
     return parser
 
 def main():
@@ -87,16 +87,16 @@ def main():
     response1 = urllib.request.urlopen('http://sideshow.jpl.nasa.gov/post/tables/table2.html')
     lines = response1.readall().decode('utf-8').splitlines()
 
-    # Set reference velocities
-    reflatv = 0
-    reflonv = 0
+    # Set reference values
+    rlat = 0
+    rlon = 0
     for i in range(0,len(lines)):
         test = lines[i].split()
         if (len(test) == 8):
             if ((test[1] == 'POS') & (test[0] == refsite)):
                 next = lines[i+1].split()
-                reflatv = float(next[2])
-                reflonv = float(next[3])
+                rlat = float(next[2])
+                rlon = float(next[3])
 
     # Start kml file
     outFile = open(results.output,'w')
@@ -112,8 +112,8 @@ def main():
                 lon = float(test[3])
                 lat = float(test[2])
                 next = lines[i+1].split()
-                lonv = float(next[3])
-                latv = float(next[2])
+                vlon = float(next[3])
+                vlat = float(next[2])
                 if ((lon > lonmin) & (lon < lonmax) & (lat > latmin) & (lat < latmax)):
 
                     # Draw markers
@@ -144,7 +144,7 @@ def main():
                     print("   <LineString>",file=outFile)
                     print("   <coordinates>",file=outFile)
                     print("   {:f},{:f},0".format(lon,lat),file=outFile)
-                    print("   {:f},{:f},0".format(lon+(lonv-reflonv)/scale,lat+(latv-reflatv)/scale),file=outFile)
+                    print("   {:f},{:f},0".format(lon+(vlon-rlon)/scale,lat+(vlat-rlat)/scale),file=outFile)
                     print("    </coordinates>",file=outFile)
                     print("   </LineString>",file=outFile)
                     print("  </Placemark>",file=outFile)

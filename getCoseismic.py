@@ -56,13 +56,14 @@ def _getParser():
     parser = argparse.ArgumentParser(description=prolog,epilog=epilog,
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('-o', action='store', dest='output',required=True,help='output kml file')
-    parser.add_argument('-t', action='store', dest='epoch',required=True,help='epoch')
-    parser.add_argument('--lat', action='store', dest='lat',required=True,help='center latitude in degress')
+    parser.add_argument('--lat', action='store', dest='lat',required=True,help='center latitude in degrees')
     parser.add_argument('--lon', action='store', dest='lon',required=True,help='center longitude in degrees')
     parser.add_argument('--width', action='store', dest='width',required=True,help='width in degrees')
     parser.add_argument('--height', action='store', dest='height',required=True,help='height in degrees')
+    parser.add_argument('-t', action='store', dest='epoch',required=True,help='epoch')
+    parser.add_argument('--scale', action='store', dest='scale',required=False,help='scale for offsets in mm/deg')
+    parser.add_argument('--ref', action='store', dest='ref',required=False,help='reference site')
     parser.add_argument('--ct', action='store', dest='ct',required=False,help='coseismic time window in years')
-    parser.add_argument('--scale', action='store', dest='scale',required=False,help='scale for offsets')
     return parser
 
 def main():
@@ -77,6 +78,16 @@ def main():
     lonmin = float(results.lon) - float(results.width)/2
     lonmax = float(results.lon) + float(results.width)/2
 
+    # Set scale
+    scale = 320 
+    if (results.scale != None):
+        scale = float(results.scale)
+
+    # Set reference site
+    refsite = 'NONE'
+    if (results.ref != None):
+        refsite = results.ref
+
     # Set epoch
     if (len(results.epoch) == 10):
         results.epoch = datetime.datetime.strptime(results.epoch,"%Y-%m-%d").strftime("%y%b%d").upper()
@@ -87,14 +98,9 @@ def main():
         ytime = ytime + 2000.
 
     # Set time window
-    ct = 0.05
+    ct = 0.1 
     if (results.ct != None):
         ct = float(results.ct)
-
-    # Set scale
-    scale = 320 
-    if (results.scale != None):
-        scale = float(results.scale)
 
     # Read table of positions
     response1 = urllib.request.urlopen('http://sideshow.jpl.nasa.gov/post/tables/table2.html')
@@ -103,6 +109,16 @@ def main():
     # Read table of breaks
     response2 = urllib.request.urlopen('http://sideshow.jpl.nasa.gov/post/tables/table3.html')
     breaks = response2.readall().decode('utf-8').splitlines()
+
+    # Set reference values
+    rlon = 0
+    rlat = 0
+    for j in range(0,len(breaks)):
+        test2 = breaks[j].split()
+        if (len(test2) == 8):
+            if ((test2[0] == refsite) & (float(test2[1]) > ytime-(ct/2)) & (float(test2[1]) < ytime+(ct/2))):
+                rlon = rlon + float(test2[3])
+                rlat = rlat + float(test2[2])
 
     # Start kml file
     outFile = open(results.output,'w')
@@ -118,14 +134,14 @@ def main():
                 lon = float(test[3])
                 lat = float(test[2])
                 if ((lon > lonmin) & (lon < lonmax) & (lat > latmin) & (lat < latmax)):
-                    lonv = 0
-                    latv = 0
+                    vlon = 0
+                    vlat = 0
                     for j in range(0,len(breaks)):
                         test2 = breaks[j].split()
                         if (len(test2) == 8):
                             if ((test2[0] == test[0]) & (float(test2[1]) > ytime-(ct/2)) & (float(test2[1]) < ytime+(ct/2))):
-                                lonv = lonv + float(test2[3])
-                                latv = latv + float(test2[2])
+                                vlon = vlon + float(test2[3])
+                                vlat = vlat + float(test2[2])
 
                     # Draw marker 
                     print("  <Placemark>",file=outFile)
@@ -155,7 +171,7 @@ def main():
                     print("   <LineString>",file=outFile)
                     print("   <coordinates>",file=outFile)
                     print("   {:f},{:f},0".format(lon,lat),file=outFile)
-                    print("   {:f},{:f},0".format(lon+(lonv)/scale,lat+(latv)/scale),file=outFile)
+                    print("   {:f},{:f},0".format(lon+(vlon-rlon)/scale,lat+(vlat-rlat)/scale),file=outFile)
                     print("    </coordinates>",file=outFile)
                     print("   </LineString>",file=outFile)
                     print("  </Placemark>",file=outFile)
