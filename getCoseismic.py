@@ -64,6 +64,7 @@ def _getParser():
     parser.add_argument('--scale', action='store', dest='scale',required=False,help='scale for offsets in mm/deg')
     parser.add_argument('--ref', action='store', dest='ref',required=False,help='reference site')
     parser.add_argument('--ct', action='store', dest='ct',required=False,help='coseismic time window in years')
+    parser.add_argument('-e', action='store_true',dest='eon',required=False,help='include error bars')
     return parser
 
 def main():
@@ -136,12 +137,16 @@ def main():
                 if ((lon > lonmin) & (lon < lonmax) & (lat > latmin) & (lat < latmax)):
                     vlon = 0
                     vlat = 0
+                    slon = 0
+                    slat = 0
                     for j in range(0,len(breaks)):
                         test2 = breaks[j].split()
                         if (len(test2) == 8):
                             if ((test2[0] == test[0]) & (float(test2[1]) > ytime-(ct/2)) & (float(test2[1]) < ytime+(ct/2))):
                                 vlon = vlon + float(test2[3])
                                 vlat = vlat + float(test2[2])
+                                slon = slon + float(test2[6])*float(test2[6])
+                                slat = slat + float(test2[5])*float(test2[5])
 
                     # Draw marker 
                     print("  <Placemark>",file=outFile)
@@ -175,6 +180,41 @@ def main():
                     print("    </coordinates>",file=outFile)
                     print("   </LineString>",file=outFile)
                     print("  </Placemark>",file=outFile)
+
+                    # Draw sigmas
+                    if (results.eon == True):
+                        print("  <Placemark>",file=outFile)
+                        print("   <Style>",file=outFile)
+                        print("    <LineStyle>",file=outFile)
+                        print("     <color>FF000000</color>",file=outFile)
+                        print("     <width>2</width>",file=outFile)
+                        print("    </LineStyle>",file=outFile)
+                        print("    <PolyStyle>",file=outFile)
+                        print("     <color>FF000000</color>",file=outFile)
+                        print("     <fill>0</fill>",file=outFile)
+                        print("    </PolyStyle>",file=outFile)
+                        print("   </Style>",file=outFile)
+                        print("   <Polygon>",file=outFile)
+                        print("    <outerBoundaryIs>",file=outFile)
+                        print("     <LinearRing>",file=outFile)
+                        print("      <coordinates>",file=outFile)
+
+                        slon = math.sqrt(slon)
+                        slat = math.sqrt(slat)
+                        theta = 0
+                        for k in range(0,16):
+                            angle = k/15*2*math.pi
+                            elon = slon*math.cos(angle)*math.cos(theta)-slat*math.sin(angle)*math.sin(theta)
+                            elat = slon*math.cos(angle)*math.sin(theta)+slat*math.sin(angle)*math.cos(theta)
+                            elon = (elon+(vlon-rlon))/scale
+                            elat = (elat+(vlat-rlat))/scale 
+                            print("      {:f},{:f},0".format(lon+elon,lat+elat),file=outFile)
+
+                        print("      </coordinates>",file=outFile)
+                        print("     </LinearRing>",file=outFile)
+                        print("    </outerBoundaryIs>",file=outFile)
+                        print("   </Polygon>",file=outFile)
+                        print("  </Placemark>",file=outFile)
 
     # Finish kml file
     print(" </Folder>",file=outFile)

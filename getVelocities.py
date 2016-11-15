@@ -59,6 +59,7 @@ def _getParser():
     parser.add_argument('--height', action='store', dest='height',required=True,help='height in degrees')
     parser.add_argument('--scale', action='store', dest='scale',required=False,help='scale for velocities in mm/yr/deg')
     parser.add_argument('--ref', action='store', dest='ref',required=False,help='reference site')
+    parser.add_argument('-e', action='store_true',dest='eon',required=False,help='include error bars')
     return parser
 
 def main():
@@ -114,6 +115,8 @@ def main():
                 next = lines[i+1].split()
                 vlon = float(next[3])
                 vlat = float(next[2])
+                slon = float(next[6])
+                slat = float(next[5])
                 if ((lon > lonmin) & (lon < lonmax) & (lat > latmin) & (lat < latmax)):
 
                     # Draw markers
@@ -148,6 +151,39 @@ def main():
                     print("    </coordinates>",file=outFile)
                     print("   </LineString>",file=outFile)
                     print("  </Placemark>",file=outFile)
+
+                    # Draw sigmas
+                    if (results.eon == True):
+                        print("  <Placemark>",file=outFile)
+                        print("   <Style>",file=outFile)
+                        print("    <LineStyle>",file=outFile)
+                        print("     <color>FF000000</color>",file=outFile)
+                        print("     <width>2</width>",file=outFile)
+                        print("    </LineStyle>",file=outFile)
+                        print("    <PolyStyle>",file=outFile)
+                        print("     <color>FF000000</color>",file=outFile)
+                        print("     <fill>0</fill>",file=outFile)
+                        print("    </PolyStyle>",file=outFile)
+                        print("   </Style>",file=outFile)
+                        print("   <Polygon>",file=outFile)
+                        print("    <outerBoundaryIs>",file=outFile)
+                        print("     <LinearRing>",file=outFile)
+                        print("      <coordinates>",file=outFile)
+
+                        theta = 0
+                        for k in range(0,16):
+                            angle = k/15*2*math.pi
+                            elon = slon*math.cos(angle)*math.cos(theta)-slat*math.sin(angle)*math.sin(theta)
+                            elat = slon*math.cos(angle)*math.sin(theta)+slat*math.sin(angle)*math.cos(theta)
+                            elon = (elon+(vlon-rlon))/scale
+                            elat = (elat+(vlat-rlat))/scale 
+                            print("      {:f},{:f},0".format(lon+elon,lat+elat),file=outFile)
+
+                        print("      </coordinates>",file=outFile)
+                        print("     </LinearRing>",file=outFile)
+                        print("    </outerBoundaryIs>",file=outFile)
+                        print("   </Polygon>",file=outFile)
+                        print("  </Placemark>",file=outFile)
 
     # Finish kml file
     print(" </Folder>",file=outFile)
