@@ -105,11 +105,11 @@ def main():
 
     # Read table of positions
     response1 = urllib.request.urlopen('http://sideshow.jpl.nasa.gov/post/tables/table2.html')
-    lines = response1.readall().decode('utf-8').splitlines()
+    lines = response1.read().decode('utf-8').splitlines()
 
     # Read table of breaks
     response2 = urllib.request.urlopen('http://sideshow.jpl.nasa.gov/post/tables/table3.html')
-    breaks = response2.readall().decode('utf-8').splitlines()
+    breaks = response2.read().decode('utf-8').splitlines()
 
     # Set reference values
     rlon = 0
