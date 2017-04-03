@@ -123,6 +123,7 @@ def main():
 
     # Start kml file
     outFile = open(results.output,'w')
+    txtFile = open(results.output.partition('.')[0]+'.txt','w')
     print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>",file=outFile)
     print("<kml xmlns=\"http://www.opengis.net/kml/2.2\">",file=outFile)
     print(" <Folder>",file=outFile)
@@ -216,10 +217,15 @@ def main():
                         print("   </Polygon>",file=outFile)
                         print("  </Placemark>",file=outFile)
 
+                    # Make table 
+                    print("{:s} {:15f} {:15f} {:15f} {:15f} {:15f} {:15f}".format(
+                    test[0],lon,lat,vlon-rlon,vlat-rlat,slon,slat),file=txtFile)
+
     # Finish kml file
     print(" </Folder>",file=outFile)
     print("</kml>",file=outFile)
     outFile.close()
+    txtFile.close()
 
 if __name__ == '__main__':
     main()
