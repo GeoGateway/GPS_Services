@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Author:  Michael Heflin
+# Author:  Developed for GeoGateway by Michael Heflin
 # Date:  September 20, 2016
 # Organization:  JPL, Caltech
 
@@ -24,7 +24,7 @@ epilog="""
     | All rights reserved
 
 **AUTHORS**
-    | Michael Heflin
+    | Developed for GeoGateway by Michael Heflin
     | Jet Propulsion Laboratory
     | California Institute of Technology
     | Pasadena, CA, USA
@@ -139,10 +139,13 @@ def main():
 
     # Start kml file
     outFile = open(results.output,'w')
-    txtFile = open(results.output.partition('.')[0]+'.txt','w')
     print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>",file=outFile)
     print("<kml xmlns=\"http://www.opengis.net/kml/2.2\">",file=outFile)
     print(" <Folder>",file=outFile)
+
+    # Start txt file
+    txtFile = open(results.output.partition('.')[0]+'.txt','w')
+    print("Site             Lon             Lat         Delta E         Delta N         Sigma E         Sigma N",file=txtFile)
 
     # Add markers and vectors
     for i in range(0,len(lines)):
@@ -184,6 +187,10 @@ def main():
                     slon = 1000.*math.sqrt(slon)
                     slat = 1000.*math.sqrt(slat)
 
+                    # Subtract reference values
+                    vlon = vlon-rlon
+                    vlat = vlat-rlat
+
                     # Only use displacements computed from both epochs
                     if (scount < 2):
                         vlon = 0
@@ -219,7 +226,7 @@ def main():
                     print("   <LineString>",file=outFile)
                     print("   <coordinates>",file=outFile)
                     print("   {:f},{:f},0".format(lon,lat),file=outFile)
-                    print("   {:f},{:f},0".format(lon+(vlon-rlon)/scale,lat+(vlat-rlat)/scale),file=outFile)
+                    print("   {:f},{:f},0".format(lon+vlon/scale,lat+vlat/scale),file=outFile)
                     print("    </coordinates>",file=outFile)
                     print("   </LineString>",file=outFile)
                     print("  </Placemark>",file=outFile)
@@ -249,8 +256,8 @@ def main():
                             angle = k/15*2*math.pi
                             elon = slon*math.cos(angle)*math.cos(theta)-slat*math.sin(angle)*math.sin(theta)
                             elat = slon*math.cos(angle)*math.sin(theta)+slat*math.sin(angle)*math.cos(theta)
-                            elon = (elon+(vlon-rlon))/scale
-                            elat = (elat+(vlat-rlat))/scale 
+                            elon = (elon+vlon)/scale
+                            elat = (elat+vlat)/scale 
                             print("      {:f},{:f},0".format(lon+elon,lat+elat),file=outFile)
 
                         print("      </coordinates>",file=outFile)
@@ -261,7 +268,7 @@ def main():
 
                     # Make table
                     print("{:s} {:15f} {:15f} {:15f} {:15f} {:15f} {:15f}".format(
-                    test[0],lon,lat,vlon-rlon,vlat-rlat,slon,slat),file=txtFile)
+                    test[0],lon,lat,vlon,vlat,slon,slat),file=txtFile)
 
     # Finish kml file
     print(" </Folder>",file=outFile)
