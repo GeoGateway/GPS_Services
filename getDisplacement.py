@@ -192,83 +192,79 @@ def main():
                     vlat = vlat-rlat
 
                     # Only use displacements computed from both epochs
-                    if (scount < 2):
-                        vlon = 0
-                        vlat = 0
-                        slon = 0
-                        slat = 0
+                    if (scount >= 2):
 
-                    # Draw marker 
-                    print("  <Placemark>",file=outFile)
-                    print("   <description><![CDATA[",file=outFile)
-                    print("    <a href=\"http://sideshow.jpl.nasa.gov/post/links/{:s}.html\">".format(test[0]),file=outFile)
-                    print("     <img src=\"http://sideshow.jpl.nasa.gov/post/plots/{:s}.jpg\" width=\"300\" height=\"300\">".format(test[0]),file=outFile)
-                    print("    </a>",file=outFile)
-                    print("   ]]></description>",file=outFile)
-                    print("   <Style><IconStyle>",file=outFile)
-                    print("    <color>FF78FF78</color>",file=outFile)
-                    print("    <scale>0.50</scale>",file=outFile)
-                    print("    <Icon><href>http://maps.google.com/mapfiles/kml/paddle/wht-blank.png</href></Icon>",file=outFile)
-                    print("   </IconStyle></Style>",file=outFile)
-                    print("   <Point>",file=outFile)
-                    print("    <coordinates>",file=outFile)
-                    print("     {:f},{:f},0".format(lon,lat),file=outFile)
-                    print("    </coordinates>",file=outFile)
-                    print("   </Point>",file=outFile)
-                    print("  </Placemark>",file=outFile)
-
-                    # Draw vector    
-                    print("  <Placemark>",file=outFile)
-                    print("   <Style><LineStyle>",file=outFile)
-                    print("    <color>FFB478FF</color>",file=outFile)
-                    print("    <width>2</width>",file=outFile)
-                    print("   </LineStyle></Style>",file=outFile)
-                    print("   <LineString>",file=outFile)
-                    print("   <coordinates>",file=outFile)
-                    print("   {:f},{:f},0".format(lon,lat),file=outFile)
-                    print("   {:f},{:f},0".format(lon+vlon/scale,lat+vlat/scale),file=outFile)
-                    print("    </coordinates>",file=outFile)
-                    print("   </LineString>",file=outFile)
-                    print("  </Placemark>",file=outFile)
-
-                    # Draw sigmas
-                    if (results.eon == True):
+                        # Draw marker 
                         print("  <Placemark>",file=outFile)
-                        print("   <Style>",file=outFile)
-                        print("    <LineStyle>",file=outFile)
-                        print("     <color>FF000000</color>",file=outFile)
-                        print("     <width>2</width>",file=outFile)
-                        print("    </LineStyle>",file=outFile)
-                        print("    <PolyStyle>",file=outFile)
-                        print("     <color>FF000000</color>",file=outFile)
-                        print("     <fill>0</fill>",file=outFile)
-                        print("    </PolyStyle>",file=outFile)
-                        print("   </Style>",file=outFile)
-                        print("   <Polygon>",file=outFile)
-                        print("    <outerBoundaryIs>",file=outFile)
-                        print("     <LinearRing>",file=outFile)
-                        print("      <coordinates>",file=outFile)
-
-                        slon = math.sqrt(slon)
-                        slat = math.sqrt(slat)
-                        theta = 0
-                        for k in range(0,16):
-                            angle = k/15*2*math.pi
-                            elon = slon*math.cos(angle)*math.cos(theta)-slat*math.sin(angle)*math.sin(theta)
-                            elat = slon*math.cos(angle)*math.sin(theta)+slat*math.sin(angle)*math.cos(theta)
-                            elon = (elon+vlon)/scale
-                            elat = (elat+vlat)/scale 
-                            print("      {:f},{:f},0".format(lon+elon,lat+elat),file=outFile)
-
-                        print("      </coordinates>",file=outFile)
-                        print("     </LinearRing>",file=outFile)
-                        print("    </outerBoundaryIs>",file=outFile)
-                        print("   </Polygon>",file=outFile)
+                        print("   <description><![CDATA[",file=outFile)
+                        print("    <a href=\"http://sideshow.jpl.nasa.gov/post/links/{:s}.html\">".format(test[0]),file=outFile)
+                        print("     <img src=\"http://sideshow.jpl.nasa.gov/post/plots/{:s}.jpg\" width=\"300\" height=\"300\">".format(test[0]),file=outFile)
+                        print("    </a>",file=outFile)
+                        print("   ]]></description>",file=outFile)
+                        print("   <Style><IconStyle>",file=outFile)
+                        print("    <color>FF78FF78</color>",file=outFile)
+                        print("    <scale>0.50</scale>",file=outFile)
+                        print("    <Icon><href>http://maps.google.com/mapfiles/kml/paddle/wht-blank.png</href></Icon>",file=outFile)
+                        print("   </IconStyle></Style>",file=outFile)
+                        print("   <Point>",file=outFile)
+                        print("    <coordinates>",file=outFile)
+                        print("     {:f},{:f},0".format(lon,lat),file=outFile)
+                        print("    </coordinates>",file=outFile)
+                        print("   </Point>",file=outFile)
                         print("  </Placemark>",file=outFile)
 
-                    # Make table
-                    print("{:s} {:15f} {:15f} {:15f} {:15f} {:15f} {:15f}".format(
-                    test[0],lon,lat,vlon,vlat,slon,slat),file=txtFile)
+                        # Draw vector    
+                        print("  <Placemark>",file=outFile)
+                        print("   <Style><LineStyle>",file=outFile)
+                        print("    <color>FFB478FF</color>",file=outFile)
+                        print("    <width>2</width>",file=outFile)
+                        print("   </LineStyle></Style>",file=outFile)
+                        print("   <LineString>",file=outFile)
+                        print("   <coordinates>",file=outFile)
+                        print("   {:f},{:f},0".format(lon,lat),file=outFile)
+                        print("   {:f},{:f},0".format(lon+vlon/scale,lat+vlat/scale),file=outFile)
+                        print("    </coordinates>",file=outFile)
+                        print("   </LineString>",file=outFile)
+                        print("  </Placemark>",file=outFile)
+
+                        # Draw sigmas
+                        if (results.eon == True):
+                            print("  <Placemark>",file=outFile)
+                            print("   <Style>",file=outFile)
+                            print("    <LineStyle>",file=outFile)
+                            print("     <color>FF000000</color>",file=outFile)
+                            print("     <width>2</width>",file=outFile)
+                            print("    </LineStyle>",file=outFile)
+                            print("    <PolyStyle>",file=outFile)
+                            print("     <color>FF000000</color>",file=outFile)
+                            print("     <fill>0</fill>",file=outFile)
+                            print("    </PolyStyle>",file=outFile)
+                            print("   </Style>",file=outFile)
+                            print("   <Polygon>",file=outFile)
+                            print("    <outerBoundaryIs>",file=outFile)
+                            print("     <LinearRing>",file=outFile)
+                            print("      <coordinates>",file=outFile)
+
+                            slon = math.sqrt(slon)
+                            slat = math.sqrt(slat)
+                            theta = 0
+                            for k in range(0,16):
+                                angle = k/15*2*math.pi
+                                elon = slon*math.cos(angle)*math.cos(theta)-slat*math.sin(angle)*math.sin(theta)
+                                elat = slon*math.cos(angle)*math.sin(theta)+slat*math.sin(angle)*math.cos(theta)
+                                elon = (elon+vlon)/scale
+                                elat = (elat+vlat)/scale 
+                                print("      {:f},{:f},0".format(lon+elon,lat+elat),file=outFile)
+
+                            print("      </coordinates>",file=outFile)
+                            print("     </LinearRing>",file=outFile)
+                            print("    </outerBoundaryIs>",file=outFile)
+                            print("   </Polygon>",file=outFile)
+                            print("  </Placemark>",file=outFile)
+
+                        # Make table
+                        print("{:s} {:15f} {:15f} {:15f} {:15f} {:15f} {:15f}".format(
+                        test[0],lon,lat,vlon,vlat,slon,slat),file=txtFile)
 
     # Finish kml file
     print(" </Folder>",file=outFile)
