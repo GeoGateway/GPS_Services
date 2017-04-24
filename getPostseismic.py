@@ -162,6 +162,12 @@ def main():
                     vlon = vlon-rlon
                     vlat = vlat-rlat
 
+                    # Set marker color
+                    if (test[0] == refsite):
+                        mcolor = 'FF0000FF'
+                    else:
+                        mcolor = 'FF78FF78'
+
                     # Draw marker 
                     print("  <Placemark>",file=outFile)
                     print("   <description><![CDATA[",file=outFile)
@@ -170,7 +176,7 @@ def main():
                     print("    </a>",file=outFile)
                     print("   ]]></description>",file=outFile)
                     print("   <Style><IconStyle>",file=outFile)
-                    print("    <color>FF78FF78</color>",file=outFile)
+                    print("    <color>{:s}</color>".format(mcolor),file=outFile)
                     print("    <scale>0.50</scale>",file=outFile)
                     print("    <Icon><href>http://maps.google.com/mapfiles/kml/paddle/wht-blank.png</href></Icon>",file=outFile)
                     print("   </IconStyle></Style>",file=outFile)
