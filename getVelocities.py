@@ -91,6 +91,7 @@ def main():
     # Set reference values
     rlat = 0
     rlon = 0
+    rrad = 0
     for i in range(0,len(lines)):
         test = lines[i].split()
         if (len(test) == 8):
@@ -98,6 +99,7 @@ def main():
                 next = lines[i+1].split()
                 rlat = float(next[2])
                 rlon = float(next[3])
+                rrad = float(next[4])
 
     # Start kml file
     outFile = open(results.output,'w')
@@ -107,7 +109,7 @@ def main():
 
     # Start txt file
     txtFile = open(results.output.partition('.')[0]+'.txt','w')
-    print("Site             Lon             Lat         Delta E         Delta N         Sigma E         Sigma N",file=txtFile)
+    print("Site          Lon          Lat      Delta E      Delta N      Delta V      Sigma E      Sigma N      Sigma V",file=txtFile)
 
     # Add markers and vectors
     for i in range(0,len(lines)):
@@ -119,13 +121,16 @@ def main():
                 next = lines[i+1].split()
                 vlon = float(next[3])
                 vlat = float(next[2])
+                vrad = float(next[4])
                 slon = float(next[6])
                 slat = float(next[5])
+                srad = float(next[7])
                 if ((lon > lonmin) & (lon < lonmax) & (lat > latmin) & (lat < latmax)):
 
                     # Subtract reference values
                     vlon = vlon-rlon
                     vlat = vlat-rlat
+                    vrad = vrad-rrad
 
 
                     # Set marker color
@@ -201,8 +206,8 @@ def main():
                         print("  </Placemark>",file=outFile)
 
                     # Make table
-                    print("{:s} {:15f} {:15f} {:15f} {:15f} {:15f} {:15f}".format(
-                    test[0],lon,lat,vlon,vlat,slon,slat),file=txtFile)
+                    print("{:s} {:12f} {:12f} {:12f} {:12f} {:12f} {:12f} {:12f} {:12f}".format(
+                    test[0],lon,lat,vlon,vlat,vrad,slon,slat,srad),file=txtFile)
 
     # Finish kml file
     print(" </Folder>",file=outFile)

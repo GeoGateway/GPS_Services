@@ -109,6 +109,7 @@ def main():
     # Read reference series
     rlon = 0
     rlat = 0
+    rrad = 0
     refsite = 'NONE'
     if (results.ref != None):
         refsite = results.ref
@@ -124,18 +125,25 @@ def main():
             if (math.sqrt((float(test2[0])-ytime1)*(float(test2[0])-ytime1))) < 0.001:
                 rlon = rlon - float(test2[1])
                 rlat = rlat - float(test2[2])
+                rrad = rrad - float(test2[3])
                 scount = scount + 1
             if (math.sqrt((float(test2[0])-ytime2)*(float(test2[0])-ytime2))) < 0.001:
                 rlon = rlon + float(test2[1])
                 rlat = rlat + float(test2[2])
+                rrad = rrad + float(test2[3])
                 scount = scount + 1
         rlon = 1000.*rlon
         rlat = 1000.*rlat
+        rrad = 1000.*rrad
 
         # Only use displacements computed from both epochs
+        stop = 0
         if (scount < 2):
             rlon = 0
             rlat = 0
+            rrad = 0
+            stop = 1
+            print("Reference site has missing data!")
 
     # Start kml file
     outFile = open(results.output,'w')
@@ -145,7 +153,7 @@ def main():
 
     # Start txt file
     txtFile = open(results.output.partition('.')[0]+'.txt','w')
-    print("Site             Lon             Lat         Delta E         Delta N         Sigma E         Sigma N",file=txtFile)
+    print("Site          Lon          Lat      Delta E      Delta N      Delta V      Sigma E      Sigma N      Sigma V",file=txtFile)
 
     # Add markers and vectors
     for i in range(0,len(lines)):
@@ -165,34 +173,43 @@ def main():
                     # Compute displacment
                     vlon = 0
                     vlat = 0
+                    vrad = 0
                     slon = 0
                     slat = 0
+                    srad = 0
                     scount = 0
                     for j in range(0,len(series)):
                         test2 = series[j].split()
                         if (math.sqrt((float(test2[0])-ytime1)*(float(test2[0])-ytime1))) < 0.001:
                             vlon = vlon - float(test2[1])
                             vlat = vlat - float(test2[2])
+                            vrad = vrad - float(test2[3])
                             slon = slon + float(test2[4])*float(test2[4])
                             slat = slat + float(test2[5])*float(test2[5])
+                            srad = srad + float(test2[6])*float(test2[6])
                             scount = scount + 1
                         if (math.sqrt((float(test2[0])-ytime2)*(float(test2[0])-ytime2))) < 0.001:
                             vlon = vlon + float(test2[1])
                             vlat = vlat + float(test2[2])
+                            vrad = vrad + float(test2[3])
                             slon = slon + float(test2[4])*float(test2[4])
                             slat = slat + float(test2[5])*float(test2[5])
+                            srad = srad + float(test2[6])*float(test2[6])
                             scount = scount + 1
                     vlon = 1000.*vlon
                     vlat = 1000.*vlat
+                    vrad = 1000.*vrad
                     slon = 1000.*math.sqrt(slon)
                     slat = 1000.*math.sqrt(slat)
+                    srad = 1000.*math.sqrt(srad)
 
                     # Subtract reference values
                     vlon = vlon-rlon
                     vlat = vlat-rlat
+                    vrad = vrad-rrad
 
                     # Only use displacements computed from both epochs
-                    if (scount >= 2):
+                    if ((scount >= 2) & (stop != 1)):
 
                         # Set marker color
                         if (test[0] == refsite):
@@ -269,8 +286,8 @@ def main():
                             print("  </Placemark>",file=outFile)
 
                         # Make table
-                        print("{:s} {:15f} {:15f} {:15f} {:15f} {:15f} {:15f}".format(
-                        test[0],lon,lat,vlon,vlat,slon,slat),file=txtFile)
+                        print("{:s} {:12f} {:12f} {:12f} {:12f} {:12f} {:12f} {:12f} {:12f}".format(
+                        test[0],lon,lat,vlon,vlat,vrad,slon,slat,srad),file=txtFile)
 
     # Finish kml file
     print(" </Folder>",file=outFile)
