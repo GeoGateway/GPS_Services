@@ -59,6 +59,7 @@ def _getParser():
     parser.add_argument('--height', action='store', dest='height',required=True,help='height in degrees')
     parser.add_argument('--scale', action='store', dest='scale',required=False,help='scale for velocities in mm/yr/deg')
     parser.add_argument('--ref', action='store', dest='ref',required=False,help='reference site')
+    parser.add_argument('--vertical', action='store_true', dest='vertical',required=False,help='show vertical only')
     parser.add_argument('-e', action='store_true',dest='eon',required=False,help='include error bars')
     return parser
 
@@ -166,8 +167,14 @@ def main():
                     print("   </LineStyle></Style>",file=outFile)
                     print("   <LineString>",file=outFile)
                     print("   <coordinates>",file=outFile)
-                    print("   {:f},{:f},0".format(lon,lat),file=outFile)
-                    print("   {:f},{:f},0".format(lon+vlon/scale,lat+vlat/scale),file=outFile)
+
+                    if (results.vertical == True):
+                      print("   {:f},{:f},0".format(lon,lat),file=outFile)
+                      print("   {:f},{:f},0".format(lon,lat+vrad/scale),file=outFile)
+                    else:
+                      print("   {:f},{:f},0".format(lon,lat),file=outFile)
+                      print("   {:f},{:f},0".format(lon+vlon/scale,lat+vlat/scale),file=outFile)
+
                     print("    </coordinates>",file=outFile)
                     print("   </LineString>",file=outFile)
                     print("  </Placemark>",file=outFile)
@@ -190,14 +197,24 @@ def main():
                         print("     <LinearRing>",file=outFile)
                         print("      <coordinates>",file=outFile)
 
-                        theta = 0
-                        for k in range(0,16):
-                            angle = k/15*2*math.pi
-                            elon = slon*math.cos(angle)*math.cos(theta)-slat*math.sin(angle)*math.sin(theta)
-                            elat = slon*math.cos(angle)*math.sin(theta)+slat*math.sin(angle)*math.cos(theta)
-                            elon = (elon+vlon)/scale
-                            elat = (elat+vlat)/scale 
-                            print("      {:f},{:f},0".format(lon+elon,lat+elat),file=outFile)
+                        if (results.vertical == True):
+                            theta = 0
+                            for k in range(0,16):
+                                angle = k/15*2*math.pi
+                                elon = srad*math.cos(angle)*math.cos(theta)-srad*math.sin(angle)*math.sin(theta)
+                                elat = srad*math.cos(angle)*math.sin(theta)+srad*math.sin(angle)*math.cos(theta)
+                                elon = (elon+0)/scale
+                                elat = (elat+vrad)/scale 
+                                print("      {:f},{:f},0".format(lon+elon,lat+elat),file=outFile)
+                        else:
+                            theta = 0
+                            for k in range(0,16):
+                                angle = k/15*2*math.pi
+                                elon = slon*math.cos(angle)*math.cos(theta)-slat*math.sin(angle)*math.sin(theta)
+                                elat = slon*math.cos(angle)*math.sin(theta)+slat*math.sin(angle)*math.cos(theta)
+                                elon = (elon+vlon)/scale
+                                elat = (elat+vlat)/scale 
+                                print("      {:f},{:f},0".format(lon+elon,lat+elat),file=outFile)
 
                         print("      </coordinates>",file=outFile)
                         print("     </LinearRing>",file=outFile)
