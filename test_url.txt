@@ -1,0 +1,5 @@
+http://192.168.59.130:5000/gpsservice/kml?function=getVelocities&lat=33&lon=-115&width=2&height=2
+http://192.168.59.130:5000/gpsservice/kml?function=getPostseismic&lat=33&lon=-115&width=2&height=2&epoch=2010-04-08
+http://192.168.59.130:5000/gpsservice/kml?function=getCoseismic&lat=33&lon=-115&width=2&height=2&epoch=2010-04-08
+http://192.168.59.130:5000/gpsservice/kml?function=getDisplacement&lat=33&lon=-115&width=2&height=2&epoch1=2010-04-07&epoch2=2010-04-09
+
