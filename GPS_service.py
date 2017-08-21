@@ -32,7 +32,10 @@ def setoutputlocation():
 
 	# make a random folder for each job
 	wkdir = "kml" + str(random.randint(1,9999)).zfill(4)
-	wkpath = os.path.dirname(os.path.realpath(__file__))
+	# put output into static folder
+	# sample url: http://192.168.59.130:8000/static/kml1867/postseismic.txt
+
+	wkpath = os.path.dirname(os.path.realpath(__file__)) + "/static"
 
 	outputdir = wkpath + os.path.sep + wkdir
 
@@ -45,7 +48,11 @@ def setoutputlocation():
 def getURLprefix():
 	"""return url prefix for output"""
 
-	urlprefix = "http://"
+	import configparser
+	config = configparser.ConfigParser()
+	config.read('GPSService.ini')
+
+	urlprefix = config['DEFAULT']['urlprefix']
 
 	return urlprefix
 
