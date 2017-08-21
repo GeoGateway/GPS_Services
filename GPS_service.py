@@ -113,8 +113,9 @@ def generateKML(args):
 	kmllist = os.listdir(outputdir)
 	urlprefix = getURLprefix()
 	foldername = os.path.basename(outputdir)
+	urlslist = [urlprefix + foldername + "/" + x for x in kmllist]
 
-	return json.dumps({"urlprefix":urlprefix,"folder":foldername,"results":kmllist})
+	return json.dumps({"urlprefix":urlprefix,"folder":foldername,"results":kmllist,"urls":urlslist})
 
 def main():
 
