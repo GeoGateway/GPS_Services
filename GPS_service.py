@@ -10,6 +10,8 @@ from getPostseismic import getPostseismic
 from getDisplacement import getDisplacement
 from getVelocities import getVelocities
 
+from copy import deepcopy
+
 class objdict(dict):
 
     def __getattr__(self, name):
@@ -144,19 +146,23 @@ def main():
 	inputdict['eon'] = True
 
 	paras = objdict(inputdict)
-
 	#test velocities
 	paras.output = "velocity.kml"
-	getVelocities(paras)
+	print("running velocity...")
+	getVelocities(deepcopy(paras))
+
 	#test coseismic
 	paras.output = "coseismic.kml"
-	getCoseismic(paras)
+	print("running coseismic...")
+	getCoseismic(deepcopy(paras))
 	#test postseismic
 	paras.output = "postseismic.kml"
-	getPostseismic(paras)
+	print("running postseismic...")
+	getPostseismic(deepcopy(paras))
 	#test displacement
 	paras.output = "displacement.kml"
-	getDisplacement(paras)
+	print("running displacement...")
+	getDisplacement(deepcopy(paras))
 
 
 if __name__ == '__main__':
