@@ -92,22 +92,22 @@ def generateKML(args):
 
 	for item in calllist:
 		if "velocities" in item.lower():
-			inputdict['output'] = outputdir + os.path.sep + "velocity.kml"
+			inputdict['output'] = outputdir + os.path.sep + "velocity"
 			paras = objdict(inputdict)
 			getVelocities(paras)
 
 		if "coseismic" in item.lower():
-			inputdict['output'] = outputdir + os.path.sep + "coseismic.kml"
+			inputdict['output'] = outputdir + os.path.sep + "coseismic"
 			paras = objdict(inputdict)
 			getCoseismic(paras)
 
 		if "postseismic" in item.lower():
-			inputdict['output'] = outputdir + os.path.sep + "postseismic.kml"
+			inputdict['output'] = outputdir + os.path.sep + "postseismic"
 			paras = objdict(inputdict)
 			getPostseismic(paras)
 
 		if "displacement" in item.lower():
-			inputdict['output'] = outputdir + os.path.sep + "displacement.kml"
+			inputdict['output'] = outputdir + os.path.sep + "displacement"
 			paras = objdict(inputdict)
 			getDisplacement(paras)
 
