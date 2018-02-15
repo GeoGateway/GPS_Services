@@ -60,11 +60,12 @@ def _getParser():
     parser.add_argument('--lon', action='store', dest='lon',required=True,help='center longitude in degrees')
     parser.add_argument('--width', action='store', dest='width',required=True,help='width in degrees')
     parser.add_argument('--height', action='store', dest='height',required=True,help='height in degrees')
-    parser.add_argument('-t', action='store', dest='epoch',required=True,help='epoch')
-    parser.add_argument('--scale', action='store', dest='scale',required=False,help='scale for offsets in mm/deg')
+    parser.add_argument('-t', action='store', dest='epoch',required=True,help='date given as YYYY-MM-DD')
+    parser.add_argument('--scale', action='store', dest='scale',required=False,help='scale for drawing estimates, default is 320 mm/deg')
     parser.add_argument('--ref', action='store', dest='ref',required=False,help='reference site')
-    parser.add_argument('--ct', action='store', dest='ct',required=False,help='coseismic time window in years')
+    parser.add_argument('--ct', action='store', dest='ct',required=False,help='coseismic window t-ct/2 to t+ct/2, default 0.1 years')
     parser.add_argument('-e', action='store_true',dest='eon',required=False,help='include error bars')
+    parser.add_argument('--minm', action='store_true',dest='mon',required=False,help='minimize marker size')
     return parser
 
 def main():
@@ -86,6 +87,12 @@ def getCoseismic(results):
     scale = 320 
     if (results.scale != None):
         scale = float(results.scale)
+
+    # Set marker size
+    if (results.mon == True):
+        msize = 0.2
+    else:
+        msize = 0.5
 
     # Set reference site
     refsite = 'NONE'
@@ -187,7 +194,7 @@ def getCoseismic(results):
                     print("   ]]></description>",file=outFile1)
                     print("   <Style><IconStyle>",file=outFile1)
                     print("    <color>{:s}</color>".format(mcolor),file=outFile1)
-                    print("    <scale>0.50</scale>",file=outFile1)
+                    print("    <scale>{:f}</scale>".format(msize),file=outFile1)
                     print("    <Icon><href>http://maps.google.com/mapfiles/kml/paddle/wht-blank.png</href></Icon>",file=outFile1)
                     print("   </IconStyle></Style>",file=outFile1)
                     print("   <Point>",file=outFile1)
@@ -206,7 +213,7 @@ def getCoseismic(results):
                     print("   ]]></description>",file=outFile2)
                     print("   <Style><IconStyle>",file=outFile2)
                     print("    <color>{:s}</color>".format(mcolor),file=outFile2)
-                    print("    <scale>0.50</scale>",file=outFile2)
+                    print("    <scale>{:f}</scale>".format(msize),file=outFile2)
                     print("    <Icon><href>http://maps.google.com/mapfiles/kml/paddle/wht-blank.png</href></Icon>",file=outFile2)
                     print("   </IconStyle></Style>",file=outFile2)
                     print("   <Point>",file=outFile2)
