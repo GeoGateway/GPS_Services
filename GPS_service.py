@@ -76,10 +76,13 @@ def generateKML(args):
 	inputdict['eon'] = False
 	inputdict['mon'] = False
 
-
 	for item in nonrequired:
 		if item in args:
 			inputdict[item] = args[item]
+			if args[item] == "True" or args[item] == 'true' :
+				inputdict[item] = True
+			else:
+				continue
 
 	#pass the required parameters
 	required = ['lat','lon','width','height','epoch','epoch1','epoch2']
@@ -88,6 +91,7 @@ def generateKML(args):
 			inputdict[item] = args[item]
 
 	outputdir = setoutputlocation()
+
 	#functions
 	calllist = args['function'].split(",")
 
@@ -143,8 +147,8 @@ def main():
 	inputdict['ref'] = None 
 	inputdict['ct'] = None 
 	inputdict['pt'] = None
-	inputdict['vertical'] = True 
 	inputdict['eon'] = True
+	inputdict['mon'] = True
 
 	paras = objdict(inputdict)
 	#test velocities
