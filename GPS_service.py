@@ -78,6 +78,8 @@ def generateKML(args):
 
 	for item in nonrequired:
 		if item in args:
+			if args[item] == '':
+				continue
 			inputdict[item] = args[item]
 			if args[item] == "True" or args[item] == 'true' :
 				inputdict[item] = True
