@@ -66,6 +66,7 @@ def _getParser():
     parser.add_argument('--ref', action='store', dest='ref',required=False,help='reference site')
     parser.add_argument('-e', action='store_true',dest='eon',required=False,help='include error bars')
     parser.add_argument('--minm', action='store_true',dest='mon',required=False,help='minimize marker size')
+    parser.add_argument('--dwin', action='store',dest='dwin',required=False,help='specify averaging window in days')
     return parser
 
 def main():
@@ -90,6 +91,11 @@ def main():
         msize = 0.2
     else:
         msize = 0.5
+
+    # Set averaging window
+    dwin = 10./365.25/2. 
+    if (results.dwin != None):
+        dwin = float(results.dwin)/365.25/2.
 
     # Set first epoch
     if (len(results.epoch1) == 10):
@@ -126,29 +132,55 @@ def main():
         response2 = urllib.request.urlopen(request)
         series = response2.read().decode('utf-8').splitlines()
 
-        # Set reference values
-        scount = 0
+        # Compute reference values
+        rlon = 0
+        rlat = 0
+        rrad = 0
+        rlon1 = 0
+        rlat1 = 0
+        rrad1 = 0
+        slon1 = 0
+        slat1 = 0
+        srad1 = 0
+        rlon2 = 0
+        rlat2 = 0
+        rrad2 = 0
+        slon2 = 0
+        slat2 = 0
+        srad2 = 0
+        scount1 = 0
+        scount2 = 0
         for j in range(0,len(series)):
             test2 = series[j].split()
-            if (math.sqrt((float(test2[0])-ytime1)*(float(test2[0])-ytime1))) < 0.001:
-                rlon = rlon - float(test2[1])
-                rlat = rlat - float(test2[2])
-                rrad = rrad - float(test2[3])
-                scount = scount + 1
-            if (math.sqrt((float(test2[0])-ytime2)*(float(test2[0])-ytime2))) < 0.001:
-                rlon = rlon + float(test2[1])
-                rlat = rlat + float(test2[2])
-                rrad = rrad + float(test2[3])
-                scount = scount + 1
-        rlon = 1000.*rlon
-        rlat = 1000.*rlat
-        rrad = 1000.*rrad
+            if (math.sqrt((float(test2[0])-ytime1)*(float(test2[0])-ytime1))) < dwin:
+                sigs1 = float(test2[4])*float(test2[4])
+                sigs2 = float(test2[5])*float(test2[5])
+                sigs3 = float(test2[6])*float(test2[6])
+                rlon1 = rlon1 + float(test2[1])/sigs1
+                rlat1 = rlat1 + float(test2[2])/sigs2
+                rrad1 = rrad1 + float(test2[3])/sigs3
+                slon1 = slon1 + 1/sigs1
+                slat1 = slat1 + 1/sigs2
+                srad1 = srad1 + 1/sigs3
+                scount1 = scount1 + 1
+            if (math.sqrt((float(test2[0])-ytime2)*(float(test2[0])-ytime2))) < dwin:
+                sigs1 = float(test2[4])*float(test2[4])
+                sigs2 = float(test2[5])*float(test2[5])
+                sigs3 = float(test2[6])*float(test2[6])
+                rlon2 = rlon2 + float(test2[1])/sigs1
+                rlat2 = rlat2 + float(test2[2])/sigs2
+                rrad2 = rrad2 + float(test2[3])/sigs3
+                slon2 = slon2 + 1/sigs1
+                slat2 = slat2 + 1/sigs2
+                srad2 = srad2 + 1/sigs3
+                scount2  = scount2  + 1
+        if ((scount1 >= 1) & (scount2 >= 1)):
+            rlon = 1000.*(rlon2/slon2-rlon1/slon1)
+            rlat = 1000.*(rlat2/slat2-rlat1/slat1)
+            rrad = 1000.*(rrad2/srad2-rrad1/srad1)
 
         # Only use displacements computed from both epochs
-        if (scount < 2):
-            rlon = 0
-            rlat = 0
-            rrad = 0
+        if ((scount1 < 1) | (scount2 < 1)):
             stop = 1
             print("Reference site has missing data!")
 
@@ -190,31 +222,52 @@ def main():
                     slon = 0
                     slat = 0
                     srad = 0
-                    scount = 0
+                    vlon1 = 0
+                    vlat1 = 0
+                    vrad1 = 0
+                    slon1 = 0
+                    slat1 = 0
+                    srad1 = 0
+                    vlon2 = 0
+                    vlat2 = 0
+                    vrad2 = 0
+                    slon2 = 0
+                    slat2 = 0
+                    srad2 = 0
+                    scount1 = 0
+                    scount2 = 0
                     for j in range(0,len(series)):
                         test2 = series[j].split()
-                        if (math.sqrt((float(test2[0])-ytime1)*(float(test2[0])-ytime1))) < 0.001:
-                            vlon = vlon - float(test2[1])
-                            vlat = vlat - float(test2[2])
-                            vrad = vrad - float(test2[3])
-                            slon = slon + float(test2[4])*float(test2[4])
-                            slat = slat + float(test2[5])*float(test2[5])
-                            srad = srad + float(test2[6])*float(test2[6])
-                            scount = scount + 1
-                        if (math.sqrt((float(test2[0])-ytime2)*(float(test2[0])-ytime2))) < 0.001:
-                            vlon = vlon + float(test2[1])
-                            vlat = vlat + float(test2[2])
-                            vrad = vrad + float(test2[3])
-                            slon = slon + float(test2[4])*float(test2[4])
-                            slat = slat + float(test2[5])*float(test2[5])
-                            srad = srad + float(test2[6])*float(test2[6])
-                            scount = scount + 1
-                    vlon = 1000.*vlon
-                    vlat = 1000.*vlat
-                    vrad = 1000.*vrad
-                    slon = 1000.*math.sqrt(slon)
-                    slat = 1000.*math.sqrt(slat)
-                    srad = 1000.*math.sqrt(srad)
+                        if (math.sqrt((float(test2[0])-ytime1)*(float(test2[0])-ytime1))) < dwin:
+                            sigs1 = float(test2[4])*float(test2[4])
+                            sigs2 = float(test2[5])*float(test2[5])
+                            sigs3 = float(test2[6])*float(test2[6])
+                            vlon1 = vlon1 + float(test2[1])/sigs1
+                            vlat1 = vlat1 + float(test2[2])/sigs2
+                            vrad1 = vrad1 + float(test2[3])/sigs3
+                            slon1 = slon1 + 1/sigs1
+                            slat1 = slat1 + 1/sigs2
+                            srad1 = srad1 + 1/sigs3
+                            scount1 = scount1 + 1
+                        if (math.sqrt((float(test2[0])-ytime2)*(float(test2[0])-ytime2))) < dwin:
+                            sigs1 = float(test2[4])*float(test2[4])
+                            sigs2 = float(test2[5])*float(test2[5])
+                            sigs3 = float(test2[6])*float(test2[6])
+                            vlon2 = vlon2 + float(test2[1])/sigs1
+                            vlat2 = vlat2 + float(test2[2])/sigs2
+                            vrad2 = vrad2 + float(test2[3])/sigs3
+                            slon2 = slon2 + 1/sigs1
+                            slat2 = slat2 + 1/sigs2
+                            srad2 = srad2 + 1/sigs3
+                            scount2  = scount2  + 1
+                   
+                    if ((scount1 >= 1) & (scount2 >= 1)):
+                        vlon = 1000.*(vlon2/slon2-vlon1/slon1)
+                        vlat = 1000.*(vlat2/slat2-vlat1/slat1)
+                        vrad = 1000.*(vrad2/srad2-vrad1/srad1)
+                        slon = 1000.*math.sqrt(1/slon1+1/slon2)
+                        slat = 1000.*math.sqrt(1/slat1+1/slat2)
+                        srad = 1000.*math.sqrt(1/srad1+1/srad2)
 
                     # Subtract reference values
                     vlon = vlon-rlon
@@ -222,7 +275,7 @@ def main():
                     vrad = vrad-rrad
 
                     # Only use displacements computed from both epochs
-                    if ((scount >= 2) & (stop != 1)):
+                    if ((scount1 >= 1) & (scount2 >= 1) & (stop != 1)):
 
                         # Set marker color
                         if (test[0] == refsite):
@@ -300,11 +353,7 @@ def main():
                             print("     <LinearRing>",file=outFile1)
                             print("      <coordinates>",file=outFile1)
 
-                            slon = math.sqrt(slon)
-                            slat = math.sqrt(slat)
-                            srad = math.sqrt(srad)
                             theta = 0
-
                             for k in range(0,31):
                                 angle = k/30*2*math.pi
                                 elon = slon*math.cos(angle)*math.cos(theta)-slat*math.sin(angle)*math.sin(theta)
