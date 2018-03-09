@@ -68,13 +68,14 @@ def generateKML(args):
 	
 	inputdict = {}
 	#non-required paras
-	nonrequired = ['scale','ref','ct','pt','eon','mon']
+	nonrequired = ['scale','ref','ct','pt','eon','mon','dwin']
 	inputdict['scale'] = None
 	inputdict['ref'] = None 
 	inputdict['ct'] = None 
 	inputdict['pt'] = None
 	inputdict['eon'] = False
 	inputdict['mon'] = False
+	inputdict['dwin'] = None
 
 	for item in nonrequired:
 		if item in args:
