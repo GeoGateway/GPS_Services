@@ -66,7 +66,8 @@ def _getParser():
     parser.add_argument('--ref', action='store', dest='ref',required=False,help='reference site')
     parser.add_argument('-e', action='store_true',dest='eon',required=False,help='include error bars')
     parser.add_argument('--minm', action='store_true',dest='mon',required=False,help='minimize marker size')
-    parser.add_argument('--dwin', action='store',dest='dwin',required=False,help='specify averaging window in days')
+    parser.add_argument('--dwin1', action='store',dest='dwin1',required=False,help='specify averaging window in days')
+    parser.add_argument('--dwin2', action='store',dest='dwin2',required=False,help='specify averaging window in days')
     return parser
 
 def main():
@@ -93,9 +94,12 @@ def main():
         msize = 0.5
 
     # Set averaging window
-    dwin = 10./365.25/2. 
-    if (results.dwin != None):
-        dwin = float(results.dwin)/365.25/2.
+    dwin1 = 10./365.25/2. 
+    dwin2 = 10./365.25/2. 
+    if (results.dwin1 != None):
+        dwin1 = float(results.dwin1)/365.25/2.
+    if (results.dwin2 != None):
+        dwin2 = float(results.dwin2)/365.25/2.
 
     # Set first epoch
     if (len(results.epoch1) == 10):
@@ -152,7 +156,7 @@ def main():
         scount2 = 0
         for j in range(0,len(series)):
             test2 = series[j].split()
-            if (math.sqrt((float(test2[0])-ytime1)*(float(test2[0])-ytime1))) < dwin:
+            if (math.sqrt((float(test2[0])-ytime1)*(float(test2[0])-ytime1))) < dwin1:
                 sigs1 = float(test2[4])*float(test2[4])
                 sigs2 = float(test2[5])*float(test2[5])
                 sigs3 = float(test2[6])*float(test2[6])
@@ -163,7 +167,7 @@ def main():
                 slat1 = slat1 + 1/sigs2
                 srad1 = srad1 + 1/sigs3
                 scount1 = scount1 + 1
-            if (math.sqrt((float(test2[0])-ytime2)*(float(test2[0])-ytime2))) < dwin:
+            if (math.sqrt((float(test2[0])-ytime2)*(float(test2[0])-ytime2))) < dwin2:
                 sigs1 = float(test2[4])*float(test2[4])
                 sigs2 = float(test2[5])*float(test2[5])
                 sigs3 = float(test2[6])*float(test2[6])
@@ -238,7 +242,7 @@ def main():
                     scount2 = 0
                     for j in range(0,len(series)):
                         test2 = series[j].split()
-                        if (math.sqrt((float(test2[0])-ytime1)*(float(test2[0])-ytime1))) < dwin:
+                        if (math.sqrt((float(test2[0])-ytime1)*(float(test2[0])-ytime1))) < dwin1:
                             sigs1 = float(test2[4])*float(test2[4])
                             sigs2 = float(test2[5])*float(test2[5])
                             sigs3 = float(test2[6])*float(test2[6])
@@ -249,7 +253,7 @@ def main():
                             slat1 = slat1 + 1/sigs2
                             srad1 = srad1 + 1/sigs3
                             scount1 = scount1 + 1
-                        if (math.sqrt((float(test2[0])-ytime2)*(float(test2[0])-ytime2))) < dwin:
+                        if (math.sqrt((float(test2[0])-ytime2)*(float(test2[0])-ytime2))) < dwin2:
                             sigs1 = float(test2[4])*float(test2[4])
                             sigs2 = float(test2[5])*float(test2[5])
                             sigs3 = float(test2[6])*float(test2[6])
