@@ -9,6 +9,7 @@ from getCoseismic import getCoseismic
 from getPostseismic import getPostseismic
 from getDisplacement import getDisplacement
 from getVelocities import getVelocities
+from getModel import getModel
 
 from copy import deepcopy
 
@@ -64,7 +65,8 @@ def generateKML(args):
 	#getVelocities:[output,lat,lon,width,height][scale,ref,vertical,eon]
 	#getCoseismic:[output,lat,lon,width,height,epoch][scale,ref,vertical,eon,ct]
 	#getPostseismic:[output,lat,lon,width,height,epoch][scale,ref,vertical,eon,ct,pt]
-	#getDisplacemnet:[output,lat,lon,width,height,epoch1,epoch2][scale,ref,vertical,eon]  
+	#getDisplacemnet:[output,lat,lon,width,height,epoch1,epoch2][scale,ref,vertical,eon,dwin1,dwin2]
+	#getModel:[output,lat,lon,width,height,epoch1,epoch2][scale,ref,eon,mon]   
 	
 	inputdict = {}
 	#non-required paras
@@ -119,6 +121,12 @@ def generateKML(args):
 			inputdict['output'] = outputdir + os.path.sep + "displacement"
 			paras = objdict(inputdict)
 			getDisplacement(paras)
+
+		if "model" in item.lower():
+			inputdict['output'] = outputdir + os.path.sep + "displace"
+			paras = objdict(inputdict)
+			getModel(paras)
+
 
 	# list of output file
 	kmllist = os.listdir(outputdir)
