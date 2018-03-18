@@ -75,7 +75,8 @@ def generateKML(args):
 	inputdict['pt'] = None
 	inputdict['eon'] = False
 	inputdict['mon'] = False
-	inputdict['dwin'] = None
+	inputdict['dwin1'] = None
+	inputdict['dwin2'] = None
 
 	for item in nonrequired:
 		if item in args:
