@@ -352,7 +352,7 @@ def main():
                             angle = k/30*2*math.pi
                             elon = slon*math.cos(angle)*math.cos(theta)-slat*math.sin(angle)*math.sin(theta)
                             elat = slon*math.cos(angle)*math.sin(theta)+slat*math.sin(angle)*math.cos(theta)
-                            elon = (elon+vlon)/scale
+                            elon = (elon+vlon)/scale/math.cos(lat*math.pi/180.)
                             elat = (elat+vlat)/scale
                             print("      {:f},{:f},0".format(lon+elon,lat+elat),file=outFile1)
 
@@ -392,7 +392,7 @@ def main():
                         angle = k/30*2*math.pi
                         elon = vrad*math.cos(angle)*math.cos(theta)-vrad*math.sin(angle)*math.sin(theta)
                         elat = vrad*math.cos(angle)*math.sin(theta)+vrad*math.sin(angle)*math.cos(theta)
-                        elon = (elon+0)/scale
+                        elon = (elon+0)/scale/math.cos(lat*math.pi/180.)
                         elat = (elat+0)/scale
                         print("      {:f},{:f},0".format(lon+elon,lat+elat),file=outFile2)
 
