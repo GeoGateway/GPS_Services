@@ -229,7 +229,7 @@ def main():
                     print("   <LineString>",file=outFile1)
                     print("   <coordinates>",file=outFile1)
                     print("   {:f},{:f},0".format(lon,lat),file=outFile1)
-                    print("   {:f},{:f},0".format(lon+vlon/scale,lat+vlat/scale),file=outFile1)
+                    print("   {:f},{:f},0".format(lon+vlon/scale/math.cos(lat*math.pi/180.),lat+vlat/scale),file=outFile1)
                     print("    </coordinates>",file=outFile1)
                     print("   </LineString>",file=outFile1)
                     print("  </Placemark>",file=outFile1)
