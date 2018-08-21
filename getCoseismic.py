@@ -66,6 +66,7 @@ def _getParser():
     parser.add_argument('--ct', action='store', dest='ct',required=False,help='coseismic window t-ct/2 to t+ct/2, default 0.1 years')
     parser.add_argument('-e', action='store_true',dest='eon',required=False,help='include error bars')
     parser.add_argument('--minm', action='store_true',dest='mon',required=False,help='minimize marker size')
+    parser.add_argument('--vabs', action='store_true',dest='vabs',required=False,help='display absolute verticals')
     return parser
 
 def main():
@@ -175,6 +176,8 @@ def main():
                     vlon = vlon-rlon
                     vlat = vlat-rlat
                     vrad = vrad-rrad
+                    if (results.vabs == True):
+                        vrad = vrad+rrad
 
                     # Set marker color
                     if (test[0] == refsite):

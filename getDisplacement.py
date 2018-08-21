@@ -68,6 +68,7 @@ def _getParser():
     parser.add_argument('--minm', action='store_true',dest='mon',required=False,help='minimize marker size')
     parser.add_argument('--dwin1', action='store',dest='dwin1',required=False,help='specify averaging window in days')
     parser.add_argument('--dwin2', action='store',dest='dwin2',required=False,help='specify averaging window in days')
+    parser.add_argument('--vabs', action='store_true',dest='vabs',required=False,help='display absolute verticals')
     return parser
 
 def main():
@@ -277,6 +278,8 @@ def main():
                     vlon = vlon-rlon
                     vlat = vlat-rlat
                     vrad = vrad-rrad
+                    if (results.vabs == True):
+                        vrad = vrad+rrad
 
                     # Only use displacements computed from both epochs
                     if ((scount1 >= 1) & (scount2 >= 1) & (stop != 1)):
