@@ -13,5 +13,9 @@ sample call:
 http://192.168.59.130:5000/gpsservice/kml?function=getPostseismic&lat=33&lon=-115&width=2&height=2&epoch=2010-04-08   
 output:  
 {"folder": "kml1867", "urlprefix": "http://", "results": ["postseismic.txt", "postseismic.kml"]}  
+http://192.168.59.130:5000/gpsservice/kml?function=getvelocities&lat=33&lon=-115&width=2&height=2&epoch=&epoch1=&epoch2=&scale=&ref=WMDG&ct=&pt=&dwin1=&dwin2=&mon=false&eon=false&vabs=true 
 
+Add a new non-required parameter:   
+  -- add para to nonrequired list   
+  -- set the default value
 
