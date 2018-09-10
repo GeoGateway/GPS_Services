@@ -118,11 +118,11 @@ def main():
         pt = float(results.pt)
 
     # Read table of positions
-    response1 = urllib.request.urlopen('http://sideshow.jpl.nasa.gov/post/tables/table2.html')
+    response1 = urllib.request.urlopen('https://sideshow.jpl.nasa.gov/post/tables/table2.html')
     lines = response1.read().decode('utf-8').splitlines()
 
     # Read table of breaks
-    response2 = urllib.request.urlopen('http://sideshow.jpl.nasa.gov/post/tables/table3.html')
+    response2 = urllib.request.urlopen('https://sideshow.jpl.nasa.gov/post/tables/table3.html')
     breaks = response2.read().decode('utf-8').splitlines()
 
     # Set reference values
@@ -140,13 +140,13 @@ def main():
     # Start kml file
     outFile1 = open(results.output+'_horizontal.kml','w')
     print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>",file=outFile1)
-    print("<kml xmlns=\"http://www.opengis.net/kml/2.2\">",file=outFile1)
+    print("<kml xmlns=\"https://www.opengis.net/kml/2.2\">",file=outFile1)
     print(" <Folder>",file=outFile1)
 
     # Start kml file
     outFile2 = open(results.output+'_vertical.kml','w')
     print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>",file=outFile2)
-    print("<kml xmlns=\"http://www.opengis.net/kml/2.2\">",file=outFile2)
+    print("<kml xmlns=\"https://www.opengis.net/kml/2.2\">",file=outFile2)
     print(" <Folder>",file=outFile2)
 
     # Start txt file
@@ -194,14 +194,14 @@ def main():
                     # Draw marker 
                     print("  <Placemark>",file=outFile1)
                     print("   <description><![CDATA[",file=outFile1)
-                    print("    <a href=\"http://sideshow.jpl.nasa.gov/post/links/{:s}.html\">".format(test[0]),file=outFile1)
-                    print("     <img src=\"http://sideshow.jpl.nasa.gov/post/plots/{:s}.jpg\" width=\"300\" height=\"300\">".format(test[0]),file=outFile1)
+                    print("    <a href=\"https://sideshow.jpl.nasa.gov/post/links/{:s}.html\">".format(test[0]),file=outFile1)
+                    print("     <img src=\"https://sideshow.jpl.nasa.gov/post/plots/{:s}.jpg\" width=\"300\" height=\"300\">".format(test[0]),file=outFile1)
                     print("    </a>",file=outFile1)
                     print("   ]]></description>",file=outFile1)
                     print("   <Style><IconStyle>",file=outFile1)
                     print("    <color>{:s}</color>".format(mcolor),file=outFile1)
                     print("    <scale>{:f}</scale>".format(msize),file=outFile1)
-                    print("    <Icon><href>http://maps.google.com/mapfiles/kml/paddle/wht-blank.png</href></Icon>",file=outFile1)
+                    print("    <Icon><href>https://maps.google.com/mapfiles/kml/paddle/wht-blank.png</href></Icon>",file=outFile1)
                     print("   </IconStyle></Style>",file=outFile1)
                     print("   <Point>",file=outFile1)
                     print("    <coordinates>",file=outFile1)
@@ -213,14 +213,14 @@ def main():
                     # Draw marker 
                     print("  <Placemark>",file=outFile2)
                     print("   <description><![CDATA[",file=outFile2)
-                    print("    <a href=\"http://sideshow.jpl.nasa.gov/post/links/{:s}.html\">".format(test[0]),file=outFile2)
-                    print("     <img src=\"http://sideshow.jpl.nasa.gov/post/plots/{:s}.jpg\" width=\"300\" height=\"300\">".format(test[0]),file=outFile2)
+                    print("    <a href=\"https://sideshow.jpl.nasa.gov/post/links/{:s}.html\">".format(test[0]),file=outFile2)
+                    print("     <img src=\"https://sideshow.jpl.nasa.gov/post/plots/{:s}.jpg\" width=\"300\" height=\"300\">".format(test[0]),file=outFile2)
                     print("    </a>",file=outFile2)
                     print("   ]]></description>",file=outFile2)
                     print("   <Style><IconStyle>",file=outFile2)
                     print("    <color>{:s}</color>".format(mcolor),file=outFile2)
                     print("    <scale>{:f}</scale>".format(msize),file=outFile2)
-                    print("    <Icon><href>http://maps.google.com/mapfiles/kml/paddle/wht-blank.png</href></Icon>",file=outFile2)
+                    print("    <Icon><href>https://maps.google.com/mapfiles/kml/paddle/wht-blank.png</href></Icon>",file=outFile2)
                     print("   </IconStyle></Style>",file=outFile2)
                     print("   <Point>",file=outFile2)
                     print("    <coordinates>",file=outFile2)
