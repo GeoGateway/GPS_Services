@@ -3,7 +3,7 @@
 GPS_servie.py
 """
 
-import random, os, json
+import random, os, json, datetime
 
 from getCoseismic import getCoseismic
 from getPostseismic import getPostseismic
@@ -34,7 +34,8 @@ def setoutputlocation():
 	""" return a folder for output """
 
 	# make a random folder for each job
-	wkdir = "kml" + str(random.randint(1,9999)).zfill(4)
+	# add time stamp
+	wkdir = "kml" + str(random.randint(1,9999)).zfill(4) + datetime.datetime.now().strftime("%Y%M%d%H%M%S")
 	# put output into static folder
 	# sample url: http://192.168.59.130:8000/static/kml1867/postseismic.txt
 
@@ -148,8 +149,8 @@ def main():
 	inputdict={}
 	inputdict['lat'] = 33
 	inputdict['lon'] = -115
-	inputdict['width'] = 2
-	inputdict['height'] = 2
+	inputdict['width'] = 1
+	inputdict['height'] = 1
 	inputdict['epoch'] = '2010-04-08'
 	inputdict['epoch1'] = '2010-04-07'
 	inputdict['epoch2'] = '2010-04-09'
@@ -162,6 +163,9 @@ def main():
 	inputdict['pt'] = None
 	inputdict['eon'] = True
 	inputdict['mon'] = True
+	inputdict['vabs'] = False
+	inputdict['dwin1'] = None
+	inputdict['dwin2'] = None
 
 	paras = objdict(inputdict)
 	#test velocities
