@@ -195,13 +195,13 @@ def getDisplacement(results):
     # Start kml file
     outFile1 = open(results.output+'_horizontal.kml','w')
     print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>",file=outFile1)
-    print("<kml xmlns=\"https://www.opengis.net/kml/2.2\">",file=outFile1)
+    print("<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">",file=outFile1)
     print(" <Folder>",file=outFile1)
 
     # Start kml file
     outFile2 = open(results.output+'_vertical.kml','w')
     print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>",file=outFile2)
-    print("<kml xmlns=\"https://www.opengis.net/kml/2.2\">",file=outFile2)
+    print("<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">",file=outFile2)
     print(" <Folder>",file=outFile2)
 
     # Start txt file
