@@ -103,29 +103,35 @@ def generateKML(args):
 	#functions
 	calllist = args['function'].split(",")
 
+	# deal with prefix
+	if args["prefix"] == '':
+		outputprefix = ''
+	else:
+		outputprefix = args['prefix'] + "_"
+
 	for item in calllist:
 		if "velocities" in item.lower():
-			inputdict['output'] = outputdir + os.path.sep + "velocity"
+			inputdict['output'] = outputdir + os.path.sep + outputprefix + "velocity"
 			paras = objdict(inputdict)
 			getVelocities(paras)
 
 		if "coseismic" in item.lower():
-			inputdict['output'] = outputdir + os.path.sep + "coseismic"
+			inputdict['output'] = outputdir + os.path.sep + outputprefix + "coseismic"
 			paras = objdict(inputdict)
 			getCoseismic(paras)
 
 		if "postseismic" in item.lower():
-			inputdict['output'] = outputdir + os.path.sep + "postseismic"
+			inputdict['output'] = outputdir + os.path.sep + outputprefix + "postseismic"
 			paras = objdict(inputdict)
 			getPostseismic(paras)
 
 		if "displacement" in item.lower():
-			inputdict['output'] = outputdir + os.path.sep + "displacement"
+			inputdict['output'] = outputdir + os.path.sep + outputprefix + "displacement"
 			paras = objdict(inputdict)
 			getDisplacement(paras)
 
 		if "model" in item.lower():
-			inputdict['output'] = outputdir + os.path.sep + "displace"
+			inputdict['output'] = outputdir + os.path.sep + outputprefix + "displace"
 			paras = objdict(inputdict)
 			getModel(paras)
 
