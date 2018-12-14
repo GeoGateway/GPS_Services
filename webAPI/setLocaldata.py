@@ -24,12 +24,12 @@ def main():
         if (len(test) == 8):
         	stations.append(test[0])
     stations = set(stations)
-    print("Total number of stations: ",len(stations))
+    #print("Total number of stations: ",len(stations))
 
     for site in stations:
         site_url = 'https://sideshow.jpl.nasa.gov/pub/JPL_GPS_Timeseries/repro2018a/post/point/'+site+'.series'
-        cmd = "wget " + site_url + " -P localdata"
-        print("downloading: ",site)
+        cmd = "wget " + site_url + " -N -P localdata"
+        #print("downloading: ",site)
         os.system(cmd)
 
 if __name__ == '__main__':
