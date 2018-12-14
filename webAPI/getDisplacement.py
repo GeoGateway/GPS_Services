@@ -71,6 +71,24 @@ def _getParser():
     parser.add_argument('--vabs', action='store_true',dest='vabs',required=False,help='display absolute verticals')
     return parser
 
+def get_localdata(site):
+    """ get localdata """
+
+    series = "localdata/" + site+'.series'
+    if os.path.exists(series):
+        with open(series, "r") as f:
+            data = f.read()
+    else:
+        location = 'https://sideshow.jpl.nasa.gov/pub/JPL_GPS_Timeseries/repro2018a/post/point/'+site+'.series'
+        request = urllib.request.Request(location)
+        response2 = urllib.request.urlopen(request)
+        data = response2.read().decode('utf-8')
+        with open(series,"w") as f:
+            f.write(data)
+
+    return data.splitlines()
+
+
 def main():
 
     # Read command line arguments
@@ -135,10 +153,11 @@ def getDisplacement(results):
     refsite = 'NONE'
     if (results.ref != None):
         refsite = results.ref
-        location = 'https://sideshow.jpl.nasa.gov/pub/JPL_GPS_Timeseries/repro2018a/post/point/'+refsite+'.series'
-        request = urllib.request.Request(location)
-        response2 = urllib.request.urlopen(request)
-        series = response2.read().decode('utf-8').splitlines()
+        #location = 'https://sideshow.jpl.nasa.gov/pub/JPL_GPS_Timeseries/repro2018a/post/point/'+refsite+'.series'
+        #request = urllib.request.Request(location)
+        #response2 = urllib.request.urlopen(request)
+        #series = response2.read().decode('utf-8').splitlines()
+        series = get_localdata(refsite)
 
         # Compute reference values
         rlon = 0
@@ -218,11 +237,11 @@ def getDisplacement(results):
                 if ((lon > lonmin) & (lon < lonmax) & (lat > latmin) & (lat < latmax)):
 
                     # Read time series
-                    location = 'https://sideshow.jpl.nasa.gov/pub/JPL_GPS_Timeseries/repro2018a/post/point/'+test[0]+'.series'
-                    request = urllib.request.Request(location)
-                    response2 = urllib.request.urlopen(request)
-                    series = response2.read().decode('utf-8').splitlines()
-
+                    #location = 'https://sideshow.jpl.nasa.gov/pub/JPL_GPS_Timeseries/repro2018a/post/point/'+test[0]+'.series'
+                    #request = urllib.request.Request(location)
+                    #response2 = urllib.request.urlopen(request)
+                    #series = response2.read().decode('utf-8').splitlines()
+                    series = get_localdata(test[0])
                     # Compute displacment
                     vlon = 0
                     vlat = 0
