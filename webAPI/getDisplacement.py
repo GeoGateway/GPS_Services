@@ -40,6 +40,7 @@ import calendar
 import argparse
 import subprocess
 import urllib.request
+from setLocaldata import get_localdata
 
 def runCmd(cmd):
     '''run a command'''
@@ -70,24 +71,6 @@ def _getParser():
     parser.add_argument('--dwin2', action='store',dest='dwin2',required=False,help='specify averaging window in days')
     parser.add_argument('--vabs', action='store_true',dest='vabs',required=False,help='display absolute verticals')
     return parser
-
-def get_localdata(site):
-    """ get localdata """
-
-    series = "localdata/" + site+'.series'
-    if os.path.exists(series):
-        with open(series, "r") as f:
-            data = f.read()
-    else:
-        location = 'https://sideshow.jpl.nasa.gov/pub/JPL_GPS_Timeseries/repro2018a/post/point/'+site+'.series'
-        request = urllib.request.Request(location)
-        response2 = urllib.request.urlopen(request)
-        data = response2.read().decode('utf-8')
-        with open(series,"w") as f:
-            f.write(data)
-
-    return data.splitlines()
-
 
 def main():
 
