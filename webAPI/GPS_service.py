@@ -131,7 +131,7 @@ def generateKML(args):
 			getDisplacement(paras)
 
 		if "model" in item.lower():
-			inputdict['output'] = outputdir + os.path.sep + outputprefix + "displace"
+			inputdict['output'] = outputdir + os.path.sep + outputprefix + "model"
 			paras = objdict(inputdict)
 			getModel(paras)
 
