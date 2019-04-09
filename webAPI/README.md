@@ -15,6 +15,14 @@ http://172.16.104.138:5000/gpsservice/kml?function=getvelocities&lat=33.1&lon=-1
 output:  
 {"results": ["velocity_vertical.kml", "velocity_table.txt", "velocity_horizontal.kml"], "urlprefix": "http://172.16.104.138:5000/static/", "folder": "kml096320193009113018", "urls": ["http://172.16.104.138:5000/static/kml096320193009113018/velocity_vertical.kml", "http://172.16.104.138:5000/static/kml096320193009113018/velocity_table.txt", "http://172.16.104.138:5000/static/kml096320193009113018/velocity_horizontal.kml"]}
 
+getDiff  
+paras: sta1 sta1 az(optional)   
+sample call:
+http://172.16.104.138:5000/gpsservice/kml?function=getDiff&sta1=P493&sta2=P503&az=100   
+output:   
+{"urls": ["http://172.16.104.138:5000/static/kml116420190109140151/P493-P503_az100.txt"], "folder": "kml116420190109140151", "urlprefix": "http://172.16.104.138:5000/static/", "results": ["P493-P503_az100.txt"]}  
+
+
 Add a new non-required parameter:   
   -- add para to nonrequired list   
   -- set the default value

@@ -64,7 +64,29 @@ def getURLprefix():
 def run_getDiff(args):
 	""" run getDiff function """
 
-	return "True"
+	# required sta1 sta2
+	# non-required az
+	inputdict = {}
+	inputdict ['sta1'] = args ['sta1']
+	inputdict ['sta2'] = args ['sta2']
+
+	inputdict['az'] = False
+	if 'az' in args:
+		inputdict['az'] = args['az']
+
+
+	outputdir = setoutputlocation()
+	inputdict ['output'] = outputdir + os.path.sep
+	paras = objdict(inputdict)
+	getDiff(paras)
+	# list of output file
+	kmllist = os.listdir(outputdir)
+	urlprefix = getURLprefix()
+	foldername = os.path.basename(outputdir)
+	urlslist = [urlprefix + foldername + "/" + x for x in kmllist]
+
+	return json.dumps({"urlprefix":urlprefix,"folder":foldername,"results":kmllist,"urls":urlslist})
+
 
 def generateKML(args):
 	""" main function to generate KMLs """

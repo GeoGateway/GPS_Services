@@ -78,6 +78,9 @@ def getDiff(results):
     else:
         output = results.sta1 + "-" + results.sta2 + ".txt"
         angle = 0.0
+    #setup output folder
+    output = results.output + output
+
     #print(angle)
     location1 = 'https://sideshow.jpl.nasa.gov/pub/JPL_GPS_Timeseries/repro2018a/post/point/'+sta1+'.series'
     location2 = 'https://sideshow.jpl.nasa.gov/pub/JPL_GPS_Timeseries/repro2018a/post/point/'+sta2+'.series'
