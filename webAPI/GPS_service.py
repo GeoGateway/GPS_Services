@@ -10,6 +10,7 @@ from getPostseismic import getPostseismic
 from getDisplacement import getDisplacement
 from getVelocities import getVelocities
 from getModel import getModel
+from getDiff import getDiff
 
 from copy import deepcopy
 
@@ -59,6 +60,11 @@ def getURLprefix():
 	urlprefix = config['DEFAULT']['urlprefix']
 
 	return urlprefix
+
+def run_getDiff(args):
+	""" run getDiff function """
+
+	return "True"
 
 def generateKML(args):
 	""" main function to generate KMLs """

@@ -10,10 +10,10 @@ getDisplacemnet:[output,lat,lon,width,height,epoch1,epoch2][scale,ref,eon,mon,dw
 getModel:[output,lat,lon,width,height,epoch1,epoch2][scale,ref,eon,mon,vabs]    
 
 sample call:  
-http://192.168.59.130:5000/gpsservice/kml?function=getPostseismic&lat=33&lon=-115&width=2&height=2&epoch=2010-04-08   
+http://172.16.104.138:5000/gpsservice/kml?function=getvelocities&lat=33.1&lon=-115.1&width=2&height=2&epoch=&epoch1=&epoch2=&scale=&ref=&ct=&pt=&dwin1=&dwin2=&prefix=&mon=false&eon=false&vabs=false   
+
 output:  
-{"folder": "kml1867", "urlprefix": "http://", "results": ["postseismic.txt", "postseismic.kml"]}  
-http://192.168.59.130:5000/gpsservice/kml?function=getvelocities&lat=33&lon=-115&width=2&height=2&epoch=&epoch1=&epoch2=&scale=&ref=WMDG&ct=&pt=&dwin1=&dwin2=&mon=false&eon=false&vabs=true 
+{"results": ["velocity_vertical.kml", "velocity_table.txt", "velocity_horizontal.kml"], "urlprefix": "http://172.16.104.138:5000/static/", "folder": "kml096320193009113018", "urls": ["http://172.16.104.138:5000/static/kml096320193009113018/velocity_vertical.kml", "http://172.16.104.138:5000/static/kml096320193009113018/velocity_table.txt", "http://172.16.104.138:5000/static/kml096320193009113018/velocity_horizontal.kml"]}
 
 Add a new non-required parameter:   
   -- add para to nonrequired list   
