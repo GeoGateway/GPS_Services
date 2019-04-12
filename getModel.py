@@ -66,7 +66,6 @@ def _getParser():
     parser.add_argument('--ref', action='store', dest='ref',required=False,help='reference site')
     parser.add_argument('-e', action='store_true',dest='eon',required=False,help='include error bars')
     parser.add_argument('--minm', action='store_true',dest='mon',required=False,help='minimize marker size')
-    parser.add_argument('--vabs', action='store_true',dest='vabs',required=False,help='display absolute verticals')
     return parser
 
 def main():
@@ -116,15 +115,15 @@ def main():
         ytime2 = ytime2 + 2000.
 
     # Read table of positions and velocities
-    response1 = urllib.request.urlopen('https://sideshow.jpl.nasa.gov/post/tables/table2.html')
+    response1 = urllib.request.urlopen('http://sideshow.jpl.nasa.gov/post/tables/table2.html')
     lines = response1.read().decode('utf-8').splitlines()
 
     # Read table of breaks
-    response2 = urllib.request.urlopen('https://sideshow.jpl.nasa.gov/post/tables/table3.html')
+    response2 = urllib.request.urlopen('http://sideshow.jpl.nasa.gov/post/tables/table3.html')
     breaks = response2.read().decode('utf-8').splitlines()
 
     # Read table of seasonals
-    response3 = urllib.request.urlopen('https://sideshow.jpl.nasa.gov/post/tables/table4.html')
+    response3 = urllib.request.urlopen('http://sideshow.jpl.nasa.gov/post/tables/table4.html')
     seasonal = response3.read().decode('utf-8').splitlines()
 
     # Set reference values
@@ -155,44 +154,44 @@ def main():
         test2 = seasonal[j].split()
         if (len(test2) == 8):
             if ((test2[0] == refsite) & (test2[1] == 'AC1')):
-                rlon = rlon + float(test2[3])*math.cos(2*math.pi*(ytime2-2019.0))
-                rlat = rlat + float(test2[2])*math.cos(2*math.pi*(ytime2-2019.0))
-                rrad = rrad + float(test2[4])*math.cos(2*math.pi*(ytime2-2019.0))
-                rlon = rlon - float(test2[3])*math.cos(2*math.pi*(ytime1-2019.0))
-                rlat = rlat - float(test2[2])*math.cos(2*math.pi*(ytime1-2019.0))
-                rrad = rrad - float(test2[4])*math.cos(2*math.pi*(ytime1-2019.0))
+                rlon = rlon + float(test2[3])*math.cos(2*math.pi*(ytime2-2020.0))
+                rlat = rlat + float(test2[2])*math.cos(2*math.pi*(ytime2-2020.0))
+                rrad = rrad + float(test2[4])*math.cos(2*math.pi*(ytime2-2020.0))
+                rlon = rlon - float(test2[3])*math.cos(2*math.pi*(ytime1-2020.0))
+                rlat = rlat - float(test2[2])*math.cos(2*math.pi*(ytime1-2020.0))
+                rrad = rrad - float(test2[4])*math.cos(2*math.pi*(ytime1-2020.0))
             if ((test2[0] == refsite) & (test2[1] == 'AS1')):
-                rlon = rlon + float(test2[3])*math.sin(2*math.pi*(ytime2-2019.0))
-                rlat = rlat + float(test2[2])*math.sin(2*math.pi*(ytime2-2019.0))
-                rrad = rrad + float(test2[4])*math.sin(2*math.pi*(ytime2-2019.0))
-                rlon = rlon - float(test2[3])*math.sin(2*math.pi*(ytime1-2019.0))
-                rlat = rlat - float(test2[2])*math.sin(2*math.pi*(ytime1-2019.0))
-                rrad = rrad - float(test2[4])*math.sin(2*math.pi*(ytime1-2019.0))
+                rlon = rlon + float(test2[3])*math.sin(2*math.pi*(ytime2-2020.0))
+                rlat = rlat + float(test2[2])*math.sin(2*math.pi*(ytime2-2020.0))
+                rrad = rrad + float(test2[4])*math.sin(2*math.pi*(ytime2-2020.0))
+                rlon = rlon - float(test2[3])*math.sin(2*math.pi*(ytime1-2020.0))
+                rlat = rlat - float(test2[2])*math.sin(2*math.pi*(ytime1-2020.0))
+                rrad = rrad - float(test2[4])*math.sin(2*math.pi*(ytime1-2020.0))
             if ((test2[0] == refsite) & (test2[1] == 'AC2')):
-                rlon = rlon + float(test2[3])*math.cos(4*math.pi*(ytime2-2019.0))
-                rlat = rlat + float(test2[2])*math.cos(4*math.pi*(ytime2-2019.0))
-                rrad = rrad + float(test2[4])*math.cos(4*math.pi*(ytime2-2019.0))
-                rlon = rlon - float(test2[3])*math.cos(4*math.pi*(ytime1-2019.0))
-                rlat = rlat - float(test2[2])*math.cos(4*math.pi*(ytime1-2019.0))
-                rrad = rrad - float(test2[4])*math.cos(4*math.pi*(ytime1-2019.0))
+                rlon = rlon + float(test2[3])*math.cos(4*math.pi*(ytime2-2020.0))
+                rlat = rlat + float(test2[2])*math.cos(4*math.pi*(ytime2-2020.0))
+                rrad = rrad + float(test2[4])*math.cos(4*math.pi*(ytime2-2020.0))
+                rlon = rlon - float(test2[3])*math.cos(4*math.pi*(ytime1-2020.0))
+                rlat = rlat - float(test2[2])*math.cos(4*math.pi*(ytime1-2020.0))
+                rrad = rrad - float(test2[4])*math.cos(4*math.pi*(ytime1-2020.0))
             if ((test2[0] == refsite) & (test2[1] == 'AS2')):
-                rlon = rlon + float(test2[3])*math.sin(4*math.pi*(ytime2-2019.0))
-                rlat = rlat + float(test2[2])*math.sin(4*math.pi*(ytime2-2019.0))
-                rrad = rrad + float(test2[4])*math.sin(4*math.pi*(ytime2-2019.0))
-                rlon = rlon - float(test2[3])*math.sin(4*math.pi*(ytime1-2019.0))
-                rlat = rlat - float(test2[2])*math.sin(4*math.pi*(ytime1-2019.0))
-                rrad = rrad - float(test2[4])*math.sin(4*math.pi*(ytime1-2019.0))
+                rlon = rlon + float(test2[3])*math.sin(4*math.pi*(ytime2-2020.0))
+                rlat = rlat + float(test2[2])*math.sin(4*math.pi*(ytime2-2020.0))
+                rrad = rrad + float(test2[4])*math.sin(4*math.pi*(ytime2-2020.0))
+                rlon = rlon - float(test2[3])*math.sin(4*math.pi*(ytime1-2020.0))
+                rlat = rlat - float(test2[2])*math.sin(4*math.pi*(ytime1-2020.0))
+                rrad = rrad - float(test2[4])*math.sin(4*math.pi*(ytime1-2020.0))
 
     # Start kml file
     outFile1 = open(results.output+'_horizontal.kml','w')
     print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>",file=outFile1)
-    print("<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">",file=outFile1)
+    print("<kml xmlns=\"http://www.opengis.net/kml/2.2\">",file=outFile1)
     print(" <Folder>",file=outFile1)
 
     # Start kml file
     outFile2 = open(results.output+'_vertical.kml','w')
     print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>",file=outFile2)
-    print("<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">",file=outFile2)
+    print("<kml xmlns=\"http://www.opengis.net/kml/2.2\">",file=outFile2)
     print(" <Folder>",file=outFile2)
 
     # Start txt file
@@ -237,40 +236,38 @@ def main():
                         test2 = seasonal[j].split()
                         if (len(test2) == 8):
                             if ((test2[0] == test[0]) & (test2[1] == 'AC1')):
-                                vlon = vlon + float(test2[3])*math.cos(2*math.pi*(ytime2-2019.0))
-                                vlat = vlat + float(test2[2])*math.cos(2*math.pi*(ytime2-2019.0))
-                                vrad = vrad + float(test2[4])*math.cos(2*math.pi*(ytime2-2019.0))
-                                vlon = vlon - float(test2[3])*math.cos(2*math.pi*(ytime1-2019.0))
-                                vlat = vlat - float(test2[2])*math.cos(2*math.pi*(ytime1-2019.0))
-                                vrad = vrad - float(test2[4])*math.cos(2*math.pi*(ytime1-2019.0))
+                                vlon = vlon + float(test2[3])*math.cos(2*math.pi*(ytime2-2020.0))
+                                vlat = vlat + float(test2[2])*math.cos(2*math.pi*(ytime2-2020.0))
+                                vrad = vrad + float(test2[4])*math.cos(2*math.pi*(ytime2-2020.0))
+                                vlon = vlon - float(test2[3])*math.cos(2*math.pi*(ytime1-2020.0))
+                                vlat = vlat - float(test2[2])*math.cos(2*math.pi*(ytime1-2020.0))
+                                vrad = vrad - float(test2[4])*math.cos(2*math.pi*(ytime1-2020.0))
                             if ((test2[0] == test[0]) & (test2[1] == 'AS1')):
-                                vlon = vlon + float(test2[3])*math.sin(2*math.pi*(ytime2-2019.0))
-                                vlat = vlat + float(test2[2])*math.sin(2*math.pi*(ytime2-2019.0))
-                                vrad = vrad + float(test2[4])*math.sin(2*math.pi*(ytime2-2019.0))
-                                vlon = vlon - float(test2[3])*math.sin(2*math.pi*(ytime1-2019.0))
-                                vlat = vlat - float(test2[2])*math.sin(2*math.pi*(ytime1-2019.0))
-                                vrad = vrad - float(test2[4])*math.sin(2*math.pi*(ytime1-2019.0))
+                                vlon = vlon + float(test2[3])*math.sin(2*math.pi*(ytime2-2020.0))
+                                vlat = vlat + float(test2[2])*math.sin(2*math.pi*(ytime2-2020.0))
+                                vrad = vrad + float(test2[4])*math.sin(2*math.pi*(ytime2-2020.0))
+                                vlon = vlon - float(test2[3])*math.sin(2*math.pi*(ytime1-2020.0))
+                                vlat = vlat - float(test2[2])*math.sin(2*math.pi*(ytime1-2020.0))
+                                vrad = vrad - float(test2[4])*math.sin(2*math.pi*(ytime1-2020.0))
                             if ((test2[0] == test[0]) & (test2[1] == 'AC2')):
-                                vlon = vlon + float(test2[3])*math.cos(4*math.pi*(ytime2-2019.0))
-                                vlat = vlat + float(test2[2])*math.cos(4*math.pi*(ytime2-2019.0))
-                                vrad = vrad + float(test2[4])*math.cos(4*math.pi*(ytime2-2019.0))
-                                vlon = vlon - float(test2[3])*math.cos(4*math.pi*(ytime1-2019.0))
-                                vlat = vlat - float(test2[2])*math.cos(4*math.pi*(ytime1-2019.0))
-                                vrad = vrad - float(test2[4])*math.cos(4*math.pi*(ytime1-2019.0))
+                                vlon = vlon + float(test2[3])*math.cos(4*math.pi*(ytime2-2020.0))
+                                vlat = vlat + float(test2[2])*math.cos(4*math.pi*(ytime2-2020.0))
+                                vrad = vrad + float(test2[4])*math.cos(4*math.pi*(ytime2-2020.0))
+                                vlon = vlon - float(test2[3])*math.cos(4*math.pi*(ytime1-2020.0))
+                                vlat = vlat - float(test2[2])*math.cos(4*math.pi*(ytime1-2020.0))
+                                vrad = vrad - float(test2[4])*math.cos(4*math.pi*(ytime1-2020.0))
                             if ((test2[0] == test[0]) & (test2[1] == 'AS2')):
-                                vlon = vlon + float(test2[3])*math.sin(4*math.pi*(ytime2-2019.0))
-                                vlat = vlat + float(test2[2])*math.sin(4*math.pi*(ytime2-2019.0))
-                                vrad = vrad + float(test2[4])*math.sin(4*math.pi*(ytime2-2019.0))
-                                vlon = vlon - float(test2[3])*math.sin(4*math.pi*(ytime1-2019.0))
-                                vlat = vlat - float(test2[2])*math.sin(4*math.pi*(ytime1-2019.0))
-                                vrad = vrad - float(test2[4])*math.sin(4*math.pi*(ytime1-2019.0))
+                                vlon = vlon + float(test2[3])*math.sin(4*math.pi*(ytime2-2020.0))
+                                vlat = vlat + float(test2[2])*math.sin(4*math.pi*(ytime2-2020.0))
+                                vrad = vrad + float(test2[4])*math.sin(4*math.pi*(ytime2-2020.0))
+                                vlon = vlon - float(test2[3])*math.sin(4*math.pi*(ytime1-2020.0))
+                                vlat = vlat - float(test2[2])*math.sin(4*math.pi*(ytime1-2020.0))
+                                vrad = vrad - float(test2[4])*math.sin(4*math.pi*(ytime1-2020.0))
 
                     # Subtract reference values
                     vlon = vlon-rlon
                     vlat = vlat-rlat
                     vrad = vrad-rrad
-                    if (results.vabs == True):
-                        vrad = vrad+rrad
 
                     # Set marker color
                     if (test[0] == refsite):
@@ -281,14 +278,14 @@ def main():
                     # Draw marker 
                     print("  <Placemark>",file=outFile1)
                     print("   <description><![CDATA[",file=outFile1)
-                    print("    <a href=\"https://sideshow.jpl.nasa.gov/post/links/{:s}.html\">".format(test[0]),file=outFile1)
-                    print("     <img src=\"https://sideshow.jpl.nasa.gov/post/plots/{:s}.jpg\" width=\"300\" height=\"300\">".format(test[0]),file=outFile1)
+                    print("    <a href=\"http://sideshow.jpl.nasa.gov/post/links/{:s}.html\">".format(test[0]),file=outFile1)
+                    print("     <img src=\"http://sideshow.jpl.nasa.gov/post/plots/{:s}.jpg\" width=\"300\" height=\"300\">".format(test[0]),file=outFile1)
                     print("    </a>",file=outFile1)
                     print("   ]]></description>",file=outFile1)
                     print("   <Style><IconStyle>",file=outFile1)
                     print("    <color>{:s}</color>".format(mcolor),file=outFile1)
                     print("    <scale>{:f}</scale>".format(msize),file=outFile1)
-                    print("    <Icon><href>https://maps.google.com/mapfiles/kml/paddle/wht-blank.png</href></Icon>",file=outFile1)
+                    print("    <Icon><href>http://maps.google.com/mapfiles/kml/paddle/wht-blank.png</href></Icon>",file=outFile1)
                     print("   </IconStyle></Style>",file=outFile1)
                     print("   <Point>",file=outFile1)
                     print("    <coordinates>",file=outFile1)
@@ -300,14 +297,14 @@ def main():
                     # Draw marker 
                     print("  <Placemark>",file=outFile2)
                     print("   <description><![CDATA[",file=outFile2)
-                    print("    <a href=\"https://sideshow.jpl.nasa.gov/post/links/{:s}.html\">".format(test[0]),file=outFile2)
-                    print("     <img src=\"https://sideshow.jpl.nasa.gov/post/plots/{:s}.jpg\" width=\"300\" height=\"300\">".format(test[0]),file=outFile2)
+                    print("    <a href=\"http://sideshow.jpl.nasa.gov/post/links/{:s}.html\">".format(test[0]),file=outFile2)
+                    print("     <img src=\"http://sideshow.jpl.nasa.gov/post/plots/{:s}.jpg\" width=\"300\" height=\"300\">".format(test[0]),file=outFile2)
                     print("    </a>",file=outFile2)
                     print("   ]]></description>",file=outFile2)
                     print("   <Style><IconStyle>",file=outFile2)
                     print("    <color>{:s}</color>".format(mcolor),file=outFile2)
                     print("    <scale>{:f}</scale>".format(msize),file=outFile2)
-                    print("    <Icon><href>https://maps.google.com/mapfiles/kml/paddle/wht-blank.png</href></Icon>",file=outFile2)
+                    print("    <Icon><href>http://maps.google.com/mapfiles/kml/paddle/wht-blank.png</href></Icon>",file=outFile2)
                     print("   </IconStyle></Style>",file=outFile2)
                     print("   <Point>",file=outFile2)
                     print("    <coordinates>",file=outFile2)
