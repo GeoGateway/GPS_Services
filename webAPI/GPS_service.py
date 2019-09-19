@@ -31,6 +31,16 @@ class objdict(dict):
         else:
             raise AttributeError("No such attribute: " + name)
 
+def padding_date(datestring):
+	""" padding month/date """
+
+	year,month,date = datestring.split("-")
+	month = month.zfill(2)
+	date = date.zfill(2)
+	newstring = "-".join([year,month,date])
+
+	return newstring
+
 def setoutputlocation():
 	""" return a folder for output """
 
@@ -125,6 +135,11 @@ def generateKML(args):
 	for item in required:
 		if item in args:
 			inputdict[item] = args[item]
+	
+	# extra handling on date
+	for item in ['epoch','epoch1','epoch2']:
+		if len(inputdict[item]) > 1:
+			inputdict[item] = padding_date(inputdict[item])		
 
 	outputdir = setoutputlocation()
 
