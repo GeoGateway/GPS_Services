@@ -109,7 +109,7 @@ def generateKML(args):
 	
 	inputdict = {}
 	#non-required paras
-	nonrequired = ['scale','ref','ct','pt','eon','mon','dwin1','dwin2','vabs']
+	nonrequired = ['scale','ref','ct','pt','eon','mon','dwin1','dwin2','vabs','analysisCenter']
 	inputdict['scale'] = None
 	inputdict['ref'] = None 
 	inputdict['ct'] = None 
@@ -119,6 +119,7 @@ def generateKML(args):
 	inputdict['dwin1'] = None
 	inputdict['dwin2'] = None
 	inputdict['vabs'] = False
+	inputdict['analysisCenter'] = None
 
 	for item in nonrequired:
 		if item in args:
@@ -215,6 +216,7 @@ def main():
 	inputdict['vabs'] = False
 	inputdict['dwin1'] = None
 	inputdict['dwin2'] = None
+	inputdict['analysisCenter'] = "NGL"
 
 	paras = objdict(inputdict)
 	#test velocities
