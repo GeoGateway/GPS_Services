@@ -213,11 +213,11 @@ def getDisplacement(results):
         elif analysisCenter == "NGL":
             path = 'http://geodesy.unr.edu/gps_timeseries/tenv3/IGS14/'\
                   + refsite +'.tenv3'
-            request = urllib.request.Request(path)
-            response2 = urllib.request.urlopen(request)
-            series = response2.read().decode('utf-8').splitlines()
-            series = series[1:]
-        
+        request = urllib.request.Request(path)
+        response2 = urllib.request.urlopen(request)
+        series = response2.read().decode('utf-8').splitlines()
+        series = series[1:]
+    
 
         # Compute reference values
         rlon = 0
