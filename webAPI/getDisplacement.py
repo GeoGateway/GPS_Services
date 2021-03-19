@@ -42,7 +42,7 @@ import calendar
 import argparse
 import subprocess
 import urllib.request
-from setLocaldata import get_localdata
+from setLocaldata import get_localdata, get_localdata_NGL
 
 class LocationItem():
    def __init__(self,line,center):
@@ -211,13 +211,14 @@ def getDisplacement(results):
             series = get_localdata(refsite)
         # NGL data first line is the header
         elif analysisCenter == "NGL":
-            path = 'http://geodesy.unr.edu/gps_timeseries/tenv3/IGS14/'\
-                  + refsite +'.tenv3'
-        request = urllib.request.Request(path)
-        response2 = urllib.request.urlopen(request)
-        series = response2.read().decode('utf-8').splitlines()
-        series = series[1:]
-    
+            # path = 'http://geodesy.unr.edu/gps_timeseries/tenv3/IGS14/'\
+            #       + refsite +'.tenv3'
+            # request = urllib.request.Request(path)
+            # response2 = urllib.request.urlopen(request)
+            # series = response2.read().decode('utf-8').splitlines()
+            # series = series[1:]
+            series = get_localdata_NGL(refsite)
+        
 
         # Compute reference values
         rlon = 0
@@ -304,14 +305,13 @@ def getDisplacement(results):
                   #     + location.stn + '.series'
                 
               elif analysisCenter == "NGL":
-                    path = 'http://geodesy.unr.edu/gps_timeseries/tenv3/IGS14/'\
-                        + location.stn +'.tenv3'
-                    request = urllib.request.Request(path)
-                    response2 = urllib.request.urlopen(request)
-                    series = response2.read().decode('utf-8').splitlines()
-                    series = series[1:]
-
-
+                  series = get_localdata_NGL(location.stn)
+                  # path = 'http://geodesy.unr.edu/gps_timeseries/tenv3/IGS14/'\
+                  #     + location.stn +'.tenv3'
+                  # request = urllib.request.Request(path)
+                  # response2 = urllib.request.urlopen(request)
+                  # series = response2.read().decode('utf-8').splitlines()
+                  # series = series[1:]
               
               # Compute displacment
               vlon = 0

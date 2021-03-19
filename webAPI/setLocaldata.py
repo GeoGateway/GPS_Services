@@ -26,6 +26,23 @@ def get_localdata(site):
 
     return data.splitlines()
 
+def get_localdata_NGL(site):
+    """ get localdata for NGL"""
+
+    series = "localdata/" + site+'.tenv3'
+    if os.path.exists(series):
+        with open(series, "r") as f:
+            data = f.read()
+    else:
+        location = 'http://geodesy.unr.edu/gps_timeseries/tenv3/IGS14/' + site +'.tenv3'
+        request = urllib.request.Request(location)
+        response2 = urllib.request.urlopen(request)
+        data = response2.read().decode('utf-8')
+        with open(series,"w") as f:
+            f.write(data)
+    # NGL data first line is the header
+    return data.splitlines()[1:]
+
 
 def main():
 
