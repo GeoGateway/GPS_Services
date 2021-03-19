@@ -391,7 +391,7 @@ def getDisplacement(results):
 '"https://sideshow.jpl.nasa.gov/post/plots/{:s}.jpg\"'.format(location.stn)
                  if analysisCenter == "NGL":
                     linkPlot = \
-'"http://geodesy.unr.edu/NGLStationPages/stations/{:s}.sta\"'.format(location.stn)
+'"http://geodesy.unr.edu/NGLStationPages/stations/{:s}.sta\">'.format(location.stn)
                     imgPlot = \
 '"http://geodesy.unr.edu/tsplots/IGS14/IGS14/TimeSeries/{:s}.png"'.format(location.stn)
 
@@ -399,7 +399,7 @@ def getDisplacement(results):
                  print("   <description><![CDATA[",file=outFile1)
                  #print("    <a href=\"https://sideshow.jpl.nasa.gov/post/links/{:s}.html\">".format(location.stn),file=outFile1)
                  #print("     <img src=\"https://sideshow.jpl.nasa.gov/post/plots/{:s}.jpg\" width=\"300\" height=\"300\">".format(location.stn),file=outFile1)
-                 print("    <a href=" + linkPlot, file=outFile1)
+                 print("    <a target=_blank href=" + linkPlot, file=outFile1)
                  print("     <img src=" + imgPlot + " width=\"300\" height=\"300\">",file=outFile1)
                  print("    </a>",file=outFile1)
                  print("   ]]></description>",file=outFile1)
@@ -420,7 +420,7 @@ def getDisplacement(results):
                  print("   <description><![CDATA[",file=outFile2)
                  #print("    <a href=\"https://sideshow.jpl.nasa.gov/post/links/{:s}.html\">".format(location.stn),file=outFile2)
                  #print("     <img src=\"https://sideshow.jpl.nasa.gov/post/plots/{:s}.jpg\" width=\"300\" height=\"300\">".format(location.stn),file=outFile2)
-                 print("    <a href=" + linkPlot, file=outFile2)
+                 print("    <a target=_blank href=" + linkPlot, file=outFile2)
                  print("     <img src=" + imgPlot + " width=\"300\" height=\"300\">",file=outFile2)
                  print("    </a>",file=outFile2)
                  print("   ]]></description>",file=outFile2)
