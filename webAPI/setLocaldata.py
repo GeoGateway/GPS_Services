@@ -8,6 +8,7 @@ from __future__ import print_function
 import os
 import sys
 import urllib.request
+import glob
 
 def get_localdata(site):
     """ get localdata """
@@ -65,6 +66,13 @@ def main():
         site_url = 'https://sideshow.jpl.nasa.gov/pub/JPL_GPS_Timeseries/repro2018a/post/point/'+site+'.series'
         cmd = "wget " + site_url + " -N -P localdata"
         #print("downloading: ",site)
+        os.system(cmd)
+    
+    #update NFL data
+    for entry in glob.glob("localdata/*.tenv3"):
+        site = entry.split("/")[1]
+        site_url = 'http://geodesy.unr.edu/gps_timeseries/tenv3/IGS14/' + site
+        cmd = "wget " + site_url + " -N -P localdata"
         os.system(cmd)
 
 if __name__ == '__main__':
