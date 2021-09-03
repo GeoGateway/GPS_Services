@@ -37,7 +37,10 @@ def get_localdata_NGL(site):
     else:
         location = 'http://geodesy.unr.edu/gps_timeseries/tenv3/IGS14/' + site +'.tenv3'
         request = urllib.request.Request(location)
-        response2 = urllib.request.urlopen(request)
+        try:
+            response2 = urllib.request.urlopen(request)
+        except urllib.error.URLError as e:
+            return []            
         data = response2.read().decode('utf-8')
         with open(series,"w") as f:
             f.write(data)

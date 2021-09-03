@@ -306,6 +306,8 @@ def getDisplacement(results):
                 
               elif analysisCenter == "NGL":
                   series = get_localdata_NGL(location.stn)
+                  if len(series) == 0:
+                      continue 
                   # path = 'http://geodesy.unr.edu/gps_timeseries/tenv3/IGS14/'\
                   #     + location.stn +'.tenv3'
                   # request = urllib.request.Request(path)
