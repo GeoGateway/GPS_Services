@@ -395,7 +395,7 @@ def getDisplacement(results):
                     linkPlot = \
 '"http://geodesy.unr.edu/NGLStationPages/stations/{:s}.sta\">'.format(location.stn)
                     imgPlot = \
-'"http://geodesy.unr.edu/tsplots/IGS14/IGS14/TimeSeries/{:s}.png"'.format(location.stn)
+'"https://archive.geo-gateway.org/NGLplot/{:s}.png"'.format(location.stn)
 
                  print("  <Placemark>",file=outFile1)
                  print("   <description><![CDATA[",file=outFile1)
