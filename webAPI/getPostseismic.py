@@ -200,7 +200,7 @@ def getPostseismic(results):
                     if (draw == 1):
                         print("  <Placemark>",file=outFile1)
                         print("   <description><![CDATA[",file=outFile1)
-                        print("    <a href=\"https://sideshow.jpl.nasa.gov/post/links/{:s}.html\">".format(test[0]),file=outFile1)
+                        print("    <a target=_blank href=\"https://sideshow.jpl.nasa.gov/post/links/{:s}.html\">".format(test[0]),file=outFile1)
                         print("     <img src=\"https://sideshow.jpl.nasa.gov/post/plots/{:s}.jpg\" width=\"300\" height=\"300\">".format(test[0]),file=outFile1)
                         print("    </a>",file=outFile1)
                         print("   ]]></description>",file=outFile1)
@@ -219,7 +219,7 @@ def getPostseismic(results):
                         # Draw marker 
                         print("  <Placemark>",file=outFile2)
                         print("   <description><![CDATA[",file=outFile2)
-                        print("    <a href=\"https://sideshow.jpl.nasa.gov/post/links/{:s}.html\">".format(test[0]),file=outFile2)
+                        print("    <a target=_blank href=\"https://sideshow.jpl.nasa.gov/post/links/{:s}.html\">".format(test[0]),file=outFile2)
                         print("     <img src=\"https://sideshow.jpl.nasa.gov/post/plots/{:s}.jpg\" width=\"300\" height=\"300\">".format(test[0]),file=outFile2)
                         print("    </a>",file=outFile2)
                         print("   ]]></description>",file=outFile2)
