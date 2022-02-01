@@ -7,8 +7,8 @@ getInterpolation.py
 
 import math
 import argparse
+import numpy as np
 import matplotlib.pyplot as plt
-import pandas as pd
 
 from load_gps_data import load_gps_data
 from gps_interpolation import interpolate, create_grid, reshape_and_create_df
@@ -77,7 +77,7 @@ def create_contour_overlay(Lon, Lat, Z):
     color coated points on folium.
     """
     fig, ax = plt.subplots(nrows=1, ncols=1)
-    ax.tricontourf(Lon, Lat, Z, cmap="seismic")
+    mbp = ax.tricontourf(Lon, Lat, Z, cmap="seismic")
     # everything below this is to remove white space and axis from plot
     # in order to save the image and plot on map properly.
     # there may be some distortion due to no geo correction in mpl but I am not sure
@@ -88,6 +88,17 @@ def create_contour_overlay(Lon, Lat, Z):
     ax.set_axis_off()
     plt.close(fig)
     fig.savefig(f"contour_of_{Z.name}.png", bbox_inches="tight", pad_inches=0)
+    
+    # plot another one for colorbar
+    # color bar need more work to get it looks good
+    fig,ax = plt.subplots()
+    ticks = np.linspace(Z.min(),Z.max(),5)
+    cbar = plt.colorbar(mbp,ax=ax,orientation="horizontal",ticks=ticks)
+    #cbar.ax.locator_params(nbins=3)
+    ax.remove()
+    plt.savefig(f"contour_of_{Z.name}_colorbar.png",bbox_inches='tight',transparent=True)
+    plt.close(fig)
+
 
 if __name__ == '__main__':
     main()
