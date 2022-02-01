@@ -6,11 +6,13 @@ GPS_servie.py
 import random, os, json, datetime
 
 from getCoseismic import getCoseismic
+from getInterpolation import getInterpolation
 from getPostseismic import getPostseismic
 from getDisplacement import getDisplacement
 from getVelocities import getVelocities
 from getModel import getModel
 from getDiff import getDiff
+
 
 from copy import deepcopy
 
@@ -173,6 +175,22 @@ def generateKML(args):
 			inputdict['output'] = outputdir + os.path.sep + outputprefix + "displacement"
 			paras = objdict(inputdict)
 			getDisplacement(paras)
+
+		if "interpolation" in item.lower():
+			# run getDisplacement first
+			inputdict['output'] = outputdir + os.path.sep + outputprefix + "displacement"
+			paras = objdict(inputdict)
+			getDisplacement(paras)			
+			# new para dict
+			paradict={}
+			paradict['datatable'] = inputdict['output']+"_table.txt"
+			paradict['grid_space'] = 0.018
+			paradict['interpolation_type'] = 'linear'
+			paradict['azimuth'] = -5
+			paradict['elevation'] = 60
+			paras_interpolation = objdict(paradict)
+			getInterpolation(paras_interpolation)
+
 
 		if "model" in item.lower():
 			inputdict['output'] = outputdir + os.path.sep + outputprefix + "model"

@@ -5,6 +5,7 @@ getInterpolation.py
     -- requirements: pykrige
 """
 
+import os
 import math
 import argparse
 import numpy as np
@@ -34,9 +35,13 @@ def main():
 
 def getInterpolation(results):
     """run interpolation"""
-    print(results)
-
-    datatable = results.datatable
+    
+    curdir = os.getcwd()
+    
+    datatable = os.path.basename(results.datatable)
+    wkdir = os.path.dirname(results.datatable)
+    if os.path.exists(wkdir):
+        os.chdir(wkdir)
     grid_space = results.grid_space
     interpolation_type = results.interpolation_type
     azimuth = results.azimuth
@@ -62,6 +67,7 @@ def getInterpolation(results):
         create_contour_overlay(
             interpolated_values['Lon'], interpolated_values['Lat'], interpolated_values[entry])
 
+    os.chdir(curdir)
 
 def to_los_disp(ux, uy, uv, azimuth=-5, elevation=60):
     g = [math.sin(azimuth)*math.cos(elevation), math.cos(azimuth)
