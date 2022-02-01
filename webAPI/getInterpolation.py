@@ -8,6 +8,7 @@ getInterpolation.py
 import os
 import math
 import argparse
+import shutil
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -66,6 +67,9 @@ def getInterpolation(results):
     for entry in collist:
         create_contour_overlay(
             interpolated_values['Lon'], interpolated_values['Lat'], interpolated_values[entry])
+
+    # zip results:
+    shutil.make_archive('gps_interpolation','zip')
 
     os.chdir(curdir)
 
