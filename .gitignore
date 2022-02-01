@@ -1,0 +1,9 @@
+webAPI/localdata
+webAPI/static
+
+*.png
+*.kml
+*.txt
+
+.DS_Store
+*__pycache__
