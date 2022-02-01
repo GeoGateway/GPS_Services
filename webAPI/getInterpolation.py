@@ -71,7 +71,13 @@ def getInterpolation(results):
     # zip results:
     shutil.make_archive('gps_interpolation','zip')
 
+    # get imagebounds
+    lat0, lat1 = gps_df['Lat'].min(), gps_df['Lat'].max()
+    lon0, lon1 = gps_df['Lon'].min(), gps_df['Lon'].max()
+    imagebounds = [[lat0,lon0],[lat1,lon1]]
     os.chdir(curdir)
+    
+    return imagebounds
 
 def to_los_disp(ux, uy, uv, azimuth=-5, elevation=60):
     g = [math.sin(azimuth)*math.cos(elevation), math.cos(azimuth)

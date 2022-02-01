@@ -189,7 +189,7 @@ def generateKML(args):
 			paradict['azimuth'] = -5
 			paradict['elevation'] = 60
 			paras_interpolation = objdict(paradict)
-			getInterpolation(paras_interpolation)
+			imagebounds = getInterpolation(paras_interpolation)
 
 
 		if "model" in item.lower():
@@ -203,8 +203,11 @@ def generateKML(args):
 	urlprefix = getURLprefix()
 	foldername = os.path.basename(outputdir)
 	urlslist = [urlprefix + foldername + "/" + x for x in kmllist]
+	results_dict = {"urlprefix":urlprefix,"folder":foldername,"results":kmllist,"urls":urlslist}
+	if "interpolation" in item.lower():
+		results_dict['imagebounds'] = imagebounds
 
-	return json.dumps({"urlprefix":urlprefix,"folder":foldername,"results":kmllist,"urls":urlslist})
+	return json.dumps(results_dict)
 
 def main():
 
