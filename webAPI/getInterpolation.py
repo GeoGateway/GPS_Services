@@ -76,6 +76,9 @@ def create_contour_overlay(Lon, Lat, Z):
     it allowed for much faster load times than trying to plot
     color coated points on folium.
     """
+
+    imagename = Z.name.replace(" ","_")
+
     fig, ax = plt.subplots(nrows=1, ncols=1)
     mbp = ax.tricontourf(Lon, Lat, Z, cmap="seismic")
     # everything below this is to remove white space and axis from plot
@@ -87,7 +90,7 @@ def create_contour_overlay(Lon, Lat, Z):
     fig.gca().yaxis.set_major_locator(plt.NullLocator())
     ax.set_axis_off()
     plt.close(fig)
-    fig.savefig(f"contour_of_{Z.name}.png", bbox_inches="tight", pad_inches=0)
+    fig.savefig(f"contour_of_{imagename}.png", bbox_inches="tight", pad_inches=0)
     
     # plot another one for colorbar
     # color bar need more work to get it looks good
@@ -96,7 +99,7 @@ def create_contour_overlay(Lon, Lat, Z):
     cbar = plt.colorbar(mbp,ax=ax,orientation="horizontal",ticks=ticks)
     #cbar.ax.locator_params(nbins=3)
     ax.remove()
-    plt.savefig(f"contour_of_{Z.name}_colorbar.png",bbox_inches='tight',transparent=True)
+    plt.savefig(f"contour_of_{imagename}_colorbar.png",bbox_inches='tight',transparent=True)
     plt.close(fig)
 
 
