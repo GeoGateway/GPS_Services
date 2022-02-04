@@ -19,8 +19,8 @@ def _getParser():
     parser = argparse.ArgumentParser()
 
     parser.add_argument('-dt', '--datatable', action='store', dest='datatable',required=True,help='data table in csv')
-    parser.add_argument('-gs','--gridspaceing', action='store', dest='gridspacing',required=False,help='Grid Spacing',default=0.018)
-    parser.add_argument('-it','--interpolation_type', action='store', dest='interpolation_type',required=False,help='Interpolation type', 
+    parser.add_argument('-gs','--gridspacing', action='store', dest='gridspacing',required=False,help='Grid Spacing',default=0.018)
+    parser.add_argument('-it','--interpolationtype', action='store', dest='interpolationtype',required=False,help='Interpolation type', 
         choices=['linear', 'gaussian', 'power','exponential', 'hole-effect', 'spherical'], default='linear')
     parser.add_argument('-az','--azimuth', action='store', dest='azimuth',required=False,help='Azimuth', default=-5)
     parser.add_argument('-ea','--elevation', action='store', dest='elevation',required=False,help='Elevation Angle', default=60)
@@ -44,10 +44,10 @@ def getInterpolation(results):
     wkdir = os.path.dirname(results.datatable)
     if os.path.exists(wkdir):
         os.chdir(wkdir)
-    gridspacing = results.gridspacing
-    interpolation_type = results.interpolation_type
-    azimuth = results.azimuth
-    elevation = results.elevation
+    gridspacing = float(results.gridspacing)
+    interpolationtype = results.interpolationtype
+    azimuth = float(results.azimuth)
+    elevation = float(results.elevation)
 
     # load data from data table
     gps_df = load_gps_data(datatable)
@@ -57,7 +57,7 @@ def getInterpolation(results):
         gps_df['Lon'],
         gps_df['Lat'],
         grid_spacing=gridspacing,
-        model=interpolation_type,
+        model=interpolationtype,
         **deltas)
 
     losd = to_los_disp(interpolated_values['Delta E'], interpolated_values['Delta N'],
