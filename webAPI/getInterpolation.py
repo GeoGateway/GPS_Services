@@ -5,7 +5,7 @@ getInterpolation.py
     -- requirements: pykrige
 """
 
-import os
+import os, sys
 import math
 import argparse
 import shutil
@@ -24,6 +24,7 @@ def _getParser():
         choices=['linear', 'gaussian', 'power','exponential', 'hole-effect', 'spherical'], default='linear')
     parser.add_argument('-az','--azimuth', action='store', dest='azimuth',required=False,help='Azimuth', default=-5)
     parser.add_argument('-ea','--elevation', action='store', dest='elevation',required=False,help='Elevation Angle', default=60)
+    parser.add_argument('-z', '--zip', action='store_true',dest='zip',required=False,help='create zip file')
     
     return parser
 
@@ -36,7 +37,7 @@ def main():
 
 def getInterpolation(results):
     """run interpolation"""
-    
+ 
     curdir = os.getcwd()
     
     datatable = os.path.basename(results.datatable)
@@ -69,7 +70,8 @@ def getInterpolation(results):
             interpolated_values['Lon'], interpolated_values['Lat'], interpolated_values[entry])
 
     # zip results:
-    shutil.make_archive('gps_interpolation','zip')
+    if results.zip:
+        shutil.make_archive('gps_interpolation','zip')
 
     # get imagebounds
     lat0, lat1 = gps_df['Lat'].min(), gps_df['Lat'].max()
