@@ -117,8 +117,8 @@ def create_contour_overlay(Lon, Lat, Z):
     cbar = plt.colorbar(mbp,ax=ax,orientation="horizontal",ticks=ticks)
     #cbar.ax.locator_params(nbins=3)
     ax.remove()
-    plt.savefig(f"contour_of_{imagename}_colorbar.png",bbox_inches='tight',transparent=False)
-    #plt.savefig(f"contour_of_{imagename}_colorbar.png",bbox_inches='tight',transparent=True)
+    plt.savefig(f"contour_of_{imagename}_colorbar0.png",bbox_inches='tight',transparent=False)
+    plt.savefig(f"contour_of_{imagename}_colorbar.png",bbox_inches='tight',transparent=True)
     plt.close(fig)
 
     # create KML
@@ -145,7 +145,7 @@ def create_contour_overlay(Lon, Lat, Z):
             <name>Legend</name>
             <visibility>1</visibility>
             <Icon>
-                <href>contour_of_{imagename}_colorbar.png</href>
+                <href>contour_of_{imagename}_colorbar0.png</href>
             </Icon>
             <overlayXY x="0.5" y="1" xunits="fraction" yunits="fraction"/>
             <screenXY x="0.5" y="1" xunits="fraction" yunits="fraction"/> 
