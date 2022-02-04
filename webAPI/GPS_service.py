@@ -185,13 +185,13 @@ def generateKML(args):
 			paradict={}
 			paradict['datatable'] = inputdict['output']+"_table.txt"
 			paradict['gridspacing'] = 0.018
-			paradict['interpolation_type'] = 'linear'
+			paradict['interpolationtype'] = 'linear'
 			paradict['azimuth'] = -5
 			paradict['elevation'] = 60
 			paradict['zip'] = True
 			# paras for iterpolation
-			paras_inerpolation = ["gridspacing","interpolationtype", "azimuth","elevation"]
-			for item in paras_interpolation:
+			extraparas = ["gridspacing","interpolationtype", "azimuth","elevation"]
+			for item in extraparas:
 				if item in args:
 					if args[item] == '':
 						continue

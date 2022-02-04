@@ -28,6 +28,7 @@ Add a new non-required parameter:
   -- set the default value
 
 ### interpolation
+Four parameters: gridspacing, interpolationtype, azimuth, elevation  
 
 ```
 http://localhost:5500/gpsservice/kml?function=getinterpolation&lat=32.97180377635759&lon=-115.55419921875001&width=1.4503504753021161&height=1.0691460280633294&epoch=&epoch1=2010-04-01&epoch2=2011-04-01&scale=&ref=&ct=&pt=&dwin1=&dwin2=&prefix=&mon=false&eon=&vabs=&analysisCenter=
