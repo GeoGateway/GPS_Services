@@ -117,9 +117,48 @@ def create_contour_overlay(Lon, Lat, Z):
     cbar = plt.colorbar(mbp,ax=ax,orientation="horizontal",ticks=ticks)
     #cbar.ax.locator_params(nbins=3)
     ax.remove()
-    plt.savefig(f"contour_of_{imagename}_colorbar.png",bbox_inches='tight',transparent=True)
+    plt.savefig(f"contour_of_{imagename}_colorbar.png",bbox_inches='tight',transparent=False)
+    #plt.savefig(f"contour_of_{imagename}_colorbar.png",bbox_inches='tight',transparent=True)
     plt.close(fig)
 
-
+    # create KML
+    kml_template = """<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+    <Document>
+        <name>{imagename}</name>
+        <description></description>
+        <GroundOverlay>
+            <name>contour_of_{imagename}.png</name>
+            <color>ccffffff</color>
+            <Icon>
+                <href>contour_of_{imagename}.png</href>
+                <viewBoundScale>0.75</viewBoundScale>
+            </Icon>
+            <LatLonBox>
+                <north>{north}</north>
+                <south>{south}</south>
+                <east>{east}</east>
+                <west>{west}</west>
+            </LatLonBox>
+        </GroundOverlay>
+        <ScreenOverlay>
+            <name>Legend</name>
+            <visibility>1</visibility>
+            <Icon>
+                <href>contour_of_{imagename}_colorbar.png</href>
+            </Icon>
+            <overlayXY x="0.5" y="1" xunits="fraction" yunits="fraction"/>
+            <screenXY x="0.5" y="1" xunits="fraction" yunits="fraction"/> 
+            <rotationXY x="0" y="0" xunits="fraction" yunits="fraction" />
+            <size x="0" y="0" xunits="fraction" yunits="fraction" />
+        </ScreenOverlay>
+    </Document>
+</kml>"""
+    lat0, lat1 = Lat.min(), Lat.max()
+    lon0, lon1 = Lon.min(), Lon.max()
+    kmlname = f"contour_of_{imagename}.kml"
+    with open(kmlname,"w") as f:
+        f.write(kml_template.format(imagename=imagename, north=lat1,south=lat0,east=lon1,west=lon0))
+    
 if __name__ == '__main__':
     main()
