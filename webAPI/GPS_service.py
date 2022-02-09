@@ -191,11 +191,11 @@ def generateKML(args):
 			paradict['zip'] = True
 			# paras for iterpolation
 			extraparas = ["gridspacing","interpolationtype", "azimuth","elevation"]
-			for item in extraparas:
-				if item in args:
-					if args[item] == '':
+			for extraitem in extraparas:
+				if extraitem in args:
+					if args[extraitem] == '':
 						continue
-					paradict[item] = args[item]
+					paradict[extraitem] = args[extraitem]
 			
 			paras_interpolation = objdict(paradict)
 			imagebounds = getInterpolation(paras_interpolation)
