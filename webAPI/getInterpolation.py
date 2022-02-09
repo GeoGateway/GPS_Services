@@ -40,16 +40,16 @@ def getInterpolation(results):
  
     
     datatable = os.path.basename(results.datatable)
-    wkdir = os.path.dirname(results.datatable)
-    if os.path.exists(wkdir):
-        os.chdir(wkdir)
+    iwkdir = os.path.dirname(results.datatable)
+    # if os.path.exists(wkdir):
+    #     os.chdir(wkdir)
     gridspacing = float(results.gridspacing)
     interpolationtype = results.interpolationtype
     azimuth = float(results.azimuth)
     elevation = float(results.elevation)
 
     # load data from data table
-    gps_df = load_gps_data(datatable)
+    gps_df = load_gps_data(results.datatable)
     deltas = gps_df[['Delta E', 'Delta N', 'Delta V']]
 
     interpolated_values = interpolate(
@@ -66,19 +66,19 @@ def getInterpolation(results):
     collist = ['Delta N', 'Delta E', 'Delta V', 'LOS Displacement']
     for entry in collist:
         create_contour_overlay(
-            interpolated_values['Lon'], interpolated_values['Lat'], interpolated_values[entry])
+            interpolated_values['Lon'], interpolated_values['Lat'], interpolated_values[entry],iwkdir)
 
     # zip results:
     if results.zip:
-        shutil.make_archive('gps_interpolation','zip', wkdir)
+        shutil.make_archive('gps_interpolation','zip', iwkdir)
 
     # get imagebounds
     lat0, lat1 = gps_df['Lat'].min(), gps_df['Lat'].max()
     lon0, lon1 = gps_df['Lon'].min(), gps_df['Lon'].max()
     imagebounds = [[lat0,lon0],[lat1,lon1]]
     
-    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    os.chdir(BASE_DIR)
+    # BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    # os.chdir(BASE_DIR)
     
     return imagebounds
 
@@ -88,7 +88,7 @@ def to_los_disp(ux, uy, uv, azimuth=-5, elevation=60):
     losd = (g[0]*ux + g[1]*uy + g[2]*uv)/5.0
     return losd
 
-def create_contour_overlay(Lon, Lat, Z):
+def create_contour_overlay(Lon, Lat, Z,outputdir):
     """
     input pandas df columns with X, Y, Z
     Saves png of tricontour. I switched to this because
@@ -109,7 +109,7 @@ def create_contour_overlay(Lon, Lat, Z):
     fig.gca().yaxis.set_major_locator(plt.NullLocator())
     ax.set_axis_off()
     plt.close(fig)
-    fig.savefig(f"contour_of_{imagename}.png", bbox_inches="tight", pad_inches=0)
+    fig.savefig(os.path.join(outputdir,f"contour_of_{imagename}.png"), bbox_inches="tight", pad_inches=0)
     
     # plot another one for colorbar
     # color bar need more work to get it looks good
@@ -118,8 +118,8 @@ def create_contour_overlay(Lon, Lat, Z):
     cbar = plt.colorbar(mbp,ax=ax,orientation="horizontal",ticks=ticks,label=imagename)
     #cbar.ax.locator_params(nbins=3)
     ax.remove()
-    plt.savefig(f"contour_of_{imagename}_colorbar0.png",bbox_inches='tight',transparent=False)
-    plt.savefig(f"contour_of_{imagename}_colorbar.png",bbox_inches='tight',transparent=True)
+    plt.savefig(os.path.join(outputdir, f"contour_of_{imagename}_colorbar0.png"),bbox_inches='tight',transparent=False)
+    plt.savefig(os.path.join(outputdir, f"contour_of_{imagename}_colorbar.png"),bbox_inches='tight',transparent=True)
     plt.close(fig)
 
     # create KML
@@ -159,7 +159,7 @@ def create_contour_overlay(Lon, Lat, Z):
     lon0, lon1 = Lon.min(), Lon.max()
     kmlname = f"contour_of_{imagename}.kml"
     with open(kmlname,"w") as f:
-        f.write(kml_template.format(imagename=imagename, north=lat1,south=lat0,east=lon1,west=lon0))
+        f.write(os.path.join(outputdir,kml_template.format(imagename=imagename, north=lat1,south=lat0,east=lon1,west=lon0)))
     
 if __name__ == '__main__':
     main()
