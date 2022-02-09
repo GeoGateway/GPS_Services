@@ -68,7 +68,7 @@ def getURLprefix():
 	import configparser
 	config = configparser.ConfigParser()
 	
-	return os.chdir()
+	return os.getcwd()
 	config.read(os.path.join(BASE_DIR,'GPSService.ini'))
 
 	urlprefix = config['DEFAULT']['urlprefix']
