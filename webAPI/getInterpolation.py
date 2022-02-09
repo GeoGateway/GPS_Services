@@ -38,7 +38,6 @@ def main():
 def getInterpolation(results):
     """run interpolation"""
  
-    curdir = os.getcwd()
     
     datatable = os.path.basename(results.datatable)
     wkdir = os.path.dirname(results.datatable)
@@ -77,7 +76,9 @@ def getInterpolation(results):
     lat0, lat1 = gps_df['Lat'].min(), gps_df['Lat'].max()
     lon0, lon1 = gps_df['Lon'].min(), gps_df['Lon'].max()
     imagebounds = [[lat0,lon0],[lat1,lon1]]
-    os.chdir(curdir)
+    
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    os.chdir(BASE_DIR)
     
     return imagebounds
 
