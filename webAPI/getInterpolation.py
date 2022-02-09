@@ -70,7 +70,7 @@ def getInterpolation(results):
 
     # zip results:
     if results.zip:
-        shutil.make_archive('gps_interpolation','zip')
+        shutil.make_archive('gps_interpolation','zip', wkdir)
 
     # get imagebounds
     lat0, lat1 = gps_df['Lat'].min(), gps_df['Lat'].max()
