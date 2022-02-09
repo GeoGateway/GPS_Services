@@ -199,7 +199,7 @@ def generateKML(args):
 			
 			paras_interpolation = objdict(paradict)
 			imagebounds = getInterpolation(paras_interpolation)
-
+			return imagebounds
 
 		if "model" in item.lower():
 			inputdict['output'] = outputdir + os.path.sep + outputprefix + "model"
