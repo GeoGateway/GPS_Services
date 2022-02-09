@@ -199,7 +199,6 @@ def generateKML(args):
 			
 			paras_interpolation = objdict(paradict)
 			imagebounds = getInterpolation(paras_interpolation)
-			return imagebounds
 
 		if "model" in item.lower():
 			inputdict['output'] = outputdir + os.path.sep + outputprefix + "model"
@@ -212,7 +211,7 @@ def generateKML(args):
 	urlprefix = getURLprefix()
 	foldername = os.path.basename(outputdir)
 	urlslist = [urlprefix + foldername + "/" + x for x in kmllist]
-	results_dict = {"urlprefix":urlprefix,"folder":foldername,"results":kmllist,"urls":urlslist}
+	results_dict = {"function":item.lower(),"urlprefix":urlprefix,"folder":foldername,"results":kmllist,"urls":urlslist}
 	if "interpolation" in item.lower():
 		results_dict['imagebounds'] = imagebounds
 
