@@ -5,7 +5,7 @@ getInterpolation.py
     -- requirements: pykrige
 """
 
-import os, sys
+import os, sys, uuid
 import math
 import argparse
 import shutil
@@ -39,7 +39,7 @@ def getInterpolation(results):
     """run interpolation"""
  
     
-    datatable = os.path.basename(results.datatable)
+    # datatable = os.path.basename(results.datatable)
     iwkdir = os.path.dirname(results.datatable)
     # if os.path.exists(wkdir):
     #     os.chdir(wkdir)
@@ -70,7 +70,10 @@ def getInterpolation(results):
 
     # zip results:
     if results.zip:
-        shutil.make_archive('gps_interpolation','zip', iwkdir)
+        tempzip = str(uuid.uuid4().hex)
+        shutil.make_archive(tempzip,'zip', iwkdir)
+        # move tempzip to the right folder
+        shutil.move(tempzip + ".zip",os.path.join(iwkdir,"interpolation.zip"))
 
     # get imagebounds
     lat0, lat1 = gps_df['Lat'].min(), gps_df['Lat'].max()
@@ -157,9 +160,9 @@ def create_contour_overlay(Lon, Lat, Z,outputdir):
 </kml>"""
     lat0, lat1 = Lat.min(), Lat.max()
     lon0, lon1 = Lon.min(), Lon.max()
-    kmlname = f"contour_of_{imagename}.kml"
+    kmlname = os.path.join(outputdir,f"contour_of_{imagename}.kml")
     with open(kmlname,"w") as f:
-        f.write(os.path.join(outputdir,kml_template.format(imagename=imagename, north=lat1,south=lat0,east=lon1,west=lon0)))
+        f.write(kml_template.format(imagename=imagename, north=lat1,south=lat0,east=lon1,west=lon0))
     
 if __name__ == '__main__':
     main()
