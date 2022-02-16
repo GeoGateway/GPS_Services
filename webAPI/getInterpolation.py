@@ -52,21 +52,31 @@ def getInterpolation(results):
     gps_df = load_gps_data(results.datatable)
     deltas = gps_df[['Delta E', 'Delta N', 'Delta V']]
 
+    # add padding
+    padding = 0.01 # 1%  
     interpolated_values = interpolate(
         gps_df['Lon'],
         gps_df['Lat'],
         grid_spacing=gridspacing,
         model=interpolationtype,
+        xypadding=padding,
         **deltas)
 
     losd = to_los_disp(interpolated_values['Delta E'], interpolated_values['Delta N'],
                        interpolated_values['Delta V'], elevation=elevation, azimuth=azimuth)
     interpolated_values['LOS Displacement'] = losd
 
+    # get imagebounds
+    lat0, lat1 = gps_df['Lat'].min(), gps_df['Lat'].max()
+    lon0, lon1 = gps_df['Lon'].min(), gps_df['Lon'].max()
+    latpad = (lat1 - lat0) * padding
+    lonpad = (lon1 - lon0) * padding
+    imagebounds = [[lat0-latpad,lon0-lonpad],[lat1+latpad,lon1+lonpad]]
+    
     collist = ['Delta N', 'Delta E', 'Delta V', 'LOS Displacement']
     for entry in collist:
         create_contour_overlay(
-            interpolated_values['Lon'], interpolated_values['Lat'], interpolated_values[entry],iwkdir)
+            interpolated_values['Lon'], interpolated_values['Lat'], interpolated_values[entry], imagebounds, iwkdir)
 
     # zip results:
     if results.zip:
@@ -75,11 +85,6 @@ def getInterpolation(results):
         # move tempzip to the right folder
         shutil.move(tempzip + ".zip",os.path.join(iwkdir,"interpolation.zip"))
 
-    # get imagebounds
-    lat0, lat1 = gps_df['Lat'].min(), gps_df['Lat'].max()
-    lon0, lon1 = gps_df['Lon'].min(), gps_df['Lon'].max()
-    imagebounds = [[lat0,lon0],[lat1,lon1]]
-    
     # BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     # os.chdir(BASE_DIR)
     
@@ -91,7 +96,7 @@ def to_los_disp(ux, uy, uv, azimuth=-5, elevation=60):
     losd = (g[0]*ux + g[1]*uy + g[2]*uv)/5.0
     return losd
 
-def create_contour_overlay(Lon, Lat, Z,outputdir):
+def create_contour_overlay(Lon, Lat, Z, imagebounds, outputdir):
     """
     input pandas df columns with X, Y, Z
     Saves png of tricontour. I switched to this because
@@ -158,8 +163,9 @@ def create_contour_overlay(Lon, Lat, Z,outputdir):
         </ScreenOverlay>
     </Document>
 </kml>"""
-    lat0, lat1 = Lat.min(), Lat.max()
-    lon0, lon1 = Lon.min(), Lon.max()
+    #imagebounds = [[lat0-latpad,lon0-lonpad],[lat1+latpad,lon1+lonpad]]
+    lat0, lat1 = imagebounds[0][0],imagebounds[1][0]
+    lon0, lon1 = imagebounds[0][1],imagebounds[1][1]
     kmlname = os.path.join(outputdir,f"contour_of_{imagename}.kml")
     with open(kmlname,"w") as f:
         f.write(kml_template.format(imagename=imagename, north=lat1,south=lat0,east=lon1,west=lon0))

@@ -3,11 +3,16 @@ import pandas as pd
 from pykrige.ok import OrdinaryKriging
 
 
-def create_grid(array, spacing=0.005):
+def create_grid(array, spacing=0.005, padding=0.0):
     """
     creates evenly spaced grid from the min and max of an array
     """
-    grid = np.arange(np.amin(array), np.amax(array), spacing)
+    vamin = np.amin(array)
+    vamax = np.amax(array)
+    vpad = (vamax - vamin) * padding
+    vamin = vamin - vpad
+    vamax = vamax + vpad  
+    grid = np.arange(vamin, vamax, spacing)
     return grid
 
 
@@ -43,12 +48,12 @@ def reshape_and_create_df(grid_x, grid_y, z1, new=True, z_name="Z"):
 
 
 def interpolate(
-    x, y, grid_spacing=0.004, model="spherical", returngrid=False, **kwargs
+    x, y, grid_spacing=0.004, model="spherical", xypadding=0.0, returngrid=False, **kwargs
 ):
     """Interpolates any number of z values
     and uses create_grid to create a grid of values based on min and max of x and y"""
-    grid_x = create_grid(x, spacing=grid_spacing)
-    grid_y = create_grid(y, spacing=grid_spacing)
+    grid_x = create_grid(x, spacing=grid_spacing, padding=xypadding)
+    grid_y = create_grid(y, spacing=grid_spacing, padding=xypadding)
     counter = 0
     for k, v in kwargs.items():
 
