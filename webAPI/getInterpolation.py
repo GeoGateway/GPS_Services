@@ -123,7 +123,7 @@ def create_contour_overlay(Lon, Lat, Z, imagebounds, outputdir):
     # color bar need more work to get it looks good
     fig,ax = plt.subplots()
     ticks = np.linspace(Z.min(),Z.max(),5)
-    cbar = plt.colorbar(mbp,ax=ax,orientation="horizontal",ticks=ticks,label=imagename)
+    cbar = plt.colorbar(mbp,ax=ax,orientation="horizontal",ticks=ticks,label=imagename + " (in mm)")
     #cbar.ax.locator_params(nbins=3)
     ax.remove()
     plt.savefig(os.path.join(outputdir, f"contour_of_{imagename}_colorbar0.png"),bbox_inches='tight',transparent=False)
