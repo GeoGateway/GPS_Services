@@ -35,7 +35,7 @@ def get_localdata_NGL(site):
         with open(series, "r") as f:
             data = f.read()
     else:
-        location = 'http://geodesy.unr.edu/gps_timeseries/tenv3/IGS14/' + site +'.tenv3'
+        location = 'https://geodesy.unr.edu/gps_timeseries/tenv3/IGS14/' + site +'.tenv3'
         request = urllib.request.Request(location)
         try:
             response2 = urllib.request.urlopen(request)
