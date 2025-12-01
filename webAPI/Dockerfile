@@ -6,7 +6,7 @@ USER root
 
 # Install ca-certificates and other dependencies
 RUN apt-get update && \
-    apt-get install -y ca-certificates curl && \
+    apt-get install -y ca-certificates curl wget && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
