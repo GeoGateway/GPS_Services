@@ -74,7 +74,7 @@ def main():
     #update NFL data
     for entry in glob.glob("localdata/*.tenv3"):
         site = entry.split("/")[1]
-        site_url = 'http://geodesy.unr.edu/gps_timeseries/tenv3/IGS14/' + site
+        site_url = 'https://geodesy.unr.edu/gps_timeseries/tenv3/IGS14/' + site
         cmd = "wget " + site_url + " -N -P localdata"
         os.system(cmd)
 
