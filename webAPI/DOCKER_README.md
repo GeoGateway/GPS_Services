@@ -193,7 +193,7 @@ docker exec -it gps-service-api bash
 
 ### Testing Inside Container
 ```bash
-docker exec -it gps-service-api conda run -n base python -c "import flask; print(flask.__version__)"
+docker exec -it gps-service-api python -c "import flask; print(flask.__version__)"
 ```
 
 ## Troubleshooting
