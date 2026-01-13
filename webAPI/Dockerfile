@@ -16,8 +16,9 @@ WORKDIR /app
 # Copy environment file
 COPY environment.yml .
 
-# Install packages from environment.yml using micromamba
+# Install packages from environment.yml and gunicorn using micromamba
 RUN micromamba install -y -n base -f environment.yml && \
+    micromamba install -y -n base -c conda-forge gunicorn && \
     micromamba clean --all --yes
 
 # Create static directory with proper permissions BEFORE copying files
@@ -43,6 +44,15 @@ ENV FLASK_ENV=production
 ENV PYTHONUNBUFFERED=1
 ENV MAMBA_DOCKERFILE_ACTIVATE=1
 
-# Run the Flask application with micromamba using shell form
-ENTRYPOINT ["/usr/local/bin/_entrypoint.sh"]
-CMD ["python", "-m", "flask", "run", "--host=0.0.0.0", "--port=5000"]
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:5000/gpsservice/test || exit 1
+
+# Run with Gunicorn for production
+CMD ["/usr/local/bin/_dockerfile_shell.sh", "gunicorn", \
+     "--bind", "0.0.0.0:5000", \
+     "--workers", "4", \
+     "--timeout", "120", \
+     "--access-logfile", "-", \
+     "--error-logfile", "-", \
+     "GPS_service_API:app"]
