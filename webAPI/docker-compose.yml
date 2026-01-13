@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  gps-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: gps-service-api
+    ports:
+      - "5000:5000"
+    volumes:
+      # Use Docker named volumes instead of bind mounts
+      - gps-static-data:/app/static
+      - gps-local-data:/app/localdata
+      # Optionally mount config file
+      - ./GPSService.ini:/app/GPSService.ini
+    environment:
+      - FLASK_APP=GPS_service_API.py
+      - FLASK_ENV=production
+    restart: unless-stopped
+    networks:
+      - gps-network
+
+volumes:
+  gps-static-data:
+    driver: local
+  gps-local-data:
+    driver: local
+
+networks:
+  gps-network:
+    driver: bridge

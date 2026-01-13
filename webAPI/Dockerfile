@@ -1,0 +1,58 @@
+# Use Micromamba base image
+FROM mambaorg/micromamba:latest
+
+# Switch to root user for setup
+USER root
+
+# Install ca-certificates and other dependencies
+RUN apt-get update && \
+    apt-get install -y ca-certificates curl wget && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Set working directory
+WORKDIR /app
+
+# Copy environment file
+COPY environment.yml .
+
+# Install packages from environment.yml and gunicorn using micromamba
+RUN micromamba install -y -n base -f environment.yml && \
+    micromamba install -y -n base -c conda-forge gunicorn && \
+    micromamba clean --all --yes
+
+# Create static directory with proper permissions BEFORE copying files
+RUN mkdir -p /app/static /app/localdata && \
+    chown -R $MAMBA_USER:$MAMBA_USER /app
+
+# Copy application files
+COPY --chown=$MAMBA_USER:$MAMBA_USER . .
+
+# Ensure permissions are correct after copying (in case static folder was copied)
+RUN chown -R $MAMBA_USER:$MAMBA_USER /app/static /app/localdata && \
+    chmod -R 755 /app/static /app/localdata
+
+# Switch back to non-root user
+USER $MAMBA_USER
+
+# Expose port 5000 (default Flask port)
+EXPOSE 5000
+
+# Set environment variables for Flask
+ENV FLASK_APP=GPS_service_API.py
+ENV FLASK_ENV=production
+ENV PYTHONUNBUFFERED=1
+ENV MAMBA_DOCKERFILE_ACTIVATE=1
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:5000/gpsservice/test || exit 1
+
+# Run with Gunicorn for production
+CMD ["/usr/local/bin/_dockerfile_shell.sh", "gunicorn", \
+     "--bind", "0.0.0.0:5000", \
+     "--workers", "4", \
+     "--timeout", "120", \
+     "--access-logfile", "-", \
+     "--error-logfile", "-", \
+     "GPS_service_API:app"]

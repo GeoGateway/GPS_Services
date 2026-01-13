@@ -1,0 +1,23 @@
+# GPS Services Web API Requirements
+# 
+# NOTE: This file is maintained for reference and local development purposes.
+# Docker builds use environment.yml for dependency management via Micromamba.
+# If you need to add a new dependency, update both this file and environment.yml.
+#
+# Python 3.8+
+
+# Web Framework
+Flask>=1.1.2,<3.0.0
+
+# Data Processing
+numpy>=1.19.0,<2.0.0
+pandas>=1.1.0,<2.0.0
+
+# Spatial Interpolation
+pykrige>=1.5.0,<2.0.0
+
+# Visualization
+matplotlib>=3.3.0,<4.0.0
+
+# HTTP Client
+requests>=2.24.0,<3.0.0
