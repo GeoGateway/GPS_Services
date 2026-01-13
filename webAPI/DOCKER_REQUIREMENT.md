@@ -23,5 +23,5 @@ urlprefix = https://data.geo-gateway.org/static/
 ### /app/localdata
 The folder saves the downloaded GPS seriese data as a local cache.  
 GPS service uses the data in local cache to speed up the computation.  
-"setLocaldata.py" updates the local cache,
+"setLocaldata.py" updates the local cache,   
 **Setup a cronjob** to run setLocaldata.py at least once a week, e.g. the middle night of every Saturday.  
