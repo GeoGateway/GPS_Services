@@ -44,6 +44,10 @@ ENV FLASK_ENV=production
 ENV PYTHONUNBUFFERED=1
 ENV MAMBA_DOCKERFILE_ACTIVATE=1
 
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:5000/gpsservice/test || exit 1
+
 # Run with Gunicorn for production
 CMD ["/usr/local/bin/_dockerfile_shell.sh", "gunicorn", \
      "--bind", "0.0.0.0:5000", \
