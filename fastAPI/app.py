@@ -30,8 +30,8 @@ app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 def test():
     info = {}
     info["python"] = sys.version
-    info["runningmode"] = app.debug
-    return Response(content=info["python"] + str(info["runningmode"]))
+    info["debug"] = app.debug
+    return info
 
 
 @app.get("/gpsservice/kml")
