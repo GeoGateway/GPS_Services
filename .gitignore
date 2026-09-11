@@ -1,5 +1,8 @@
 webAPI/localdata
 webAPI/static
+fastAPI/localdata
+fastAPI/static
+fastAPI/.venv
 
 .DS_Store
 *__pycache__

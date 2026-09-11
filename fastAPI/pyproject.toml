@@ -1,0 +1,17 @@
+[project]
+name = "gps-services-fastapi"
+version = "0.1.0"
+description = "FastAPI wrapper for GPS Services command-line tools"
+requires-python = ">=3.9,<3.12"
+dependencies = [
+  "fastapi>=0.115",
+  "uvicorn[standard]>=0.30",
+  "numpy>=1.19,<2.0",
+  "pandas>=1.1,<2.0",
+  "pykrige>=1.5,<2.0",
+  "matplotlib>=3.3,<4.0",
+  "requests>=2.24,<3.0",
+]
+
+[tool.uv]
+package = false
