@@ -4,8 +4,8 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>GNSS Data Analysis — Map</title>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css" />
+<link rel="stylesheet" href="/static/vendor/leaflet/leaflet.css" />
+<link rel="stylesheet" href="/static/vendor/leaflet-draw/leaflet.draw.css" />
 <style>
   * { box-sizing: border-box; }
   html, body { height: 100%; margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
@@ -58,6 +58,7 @@
         <option value="getdisplacement">Displacement</option>
         <option value="getmodel">Model</option>
       </select>
+      <div id="modelHint" class="hint" style="margin-top:4px"></div>
     </div>
     <button class="btn btn-dark" id="btnDraw">✏️ Draw an area on map</button>
     <button class="btn btn-warn" id="btnClear">🗑 Clear GNSS Layers</button>
@@ -109,21 +110,82 @@
   <!-- RIGHT PANEL : Leaflet map -->
   <div id="right"><div id="map"></div></div>
 </div>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
-<script src="https://unpkg.com/@tmcw/togeojson@5.8.1/dist/togeojson.umd.js"></script>
 <script>
+/* ===== Left panel: model -> parameters =====================================
+   Standalone block with NO external dependencies, executed BEFORE the map
+   libraries load, so the parameter form always switches even if a map
+   script fails. Field mapping mirrors the v-if conditions in
+   reference/GNSS.vue:
+     Epoch              -> getcoseismic, getpostseismic
+     Epoch 1 / Epoch 2  -> getdisplacement, getmodel
+     Coseismic Win.     -> getcoseismic, getpostseismic
+     Postseismic Win.   -> getpostseismic
+     Av. Win. 1 / 2, Use NGL data, Interpolation -> getdisplacement
+     center lat/lon, spans, Ref. Site, Scale, Output Prefix,
+     Minimize Marker Size, absolute verticals, error ellipses -> all models
+   ============================================================================ */
 const $ = id => document.getElementById(id);
-const map = L.map('map').setView([33.5, -115.5], 7);
+const MODEL_PARAMS = {
+  getvelocities:   { epoch: false, epochs: false, ctwin: false, ptwin: false, dwins: false, ngl: false, interp: false },
+  getcoseismic:    { epoch: true,  epochs: false, ctwin: true,  ptwin: false, dwins: false, ngl: false, interp: false },
+  getpostseismic:  { epoch: true,  epochs: false, ctwin: true,  ptwin: true,  dwins: false, ngl: false, interp: false },
+  getdisplacement: { epoch: false, epochs: true,  ctwin: false, ptwin: false, dwins: true,  ngl: true,  interp: true  },
+  getmodel:        { epoch: false, epochs: true,  ctwin: false, ptwin: false, dwins: false, ngl: false, interp: false },
+};
+const MODEL_HINTS = {
+  getvelocities: 'Interseismic velocities within the selected area.',
+  getcoseismic: 'Coseismic offsets for the earthquake on Epoch.',
+  getpostseismic: 'Postseismic deformation following the earthquake on Epoch.',
+  getdisplacement: 'Displacements between Epoch 1 and Epoch 2.',
+  getmodel: 'Model predictions between Epoch 1 and Epoch 2.',
+};
+function applyModel() {
+  const m = $('kmltype_sel').value;
+  const cfg = MODEL_PARAMS[m] || MODEL_PARAMS.getvelocities;
+  const show = (id, v) => { $(id).style.display = v ? '' : 'none'; };
+  show('f_epoch', cfg.epoch);
+  show('f_epoch1', cfg.epochs);
+  show('f_epoch2', cfg.epochs);
+  show('f_ctwin', cfg.ctwin);
+  show('f_ptwin', cfg.ptwin);
+  show('f_dwin1', cfg.dwins);
+  show('f_dwin2', cfg.dwins);
+  show('w_ngl', cfg.ngl);
+  show('w_interp', cfg.interp);
+  show('nglLink', cfg.ngl);
+  // interpolation sub-options only make sense for the displacement model
+  show('interpBox', cfg.interp && $('gs_interpolation').checked);
+  $('modelHint').textContent = MODEL_HINTS[m] || '';
+}
+$('kmltype_sel').addEventListener('change', applyModel);
+$('gs_interpolation').addEventListener('change', applyModel);
+applyModel();
+</script>
+<script src="/static/vendor/leaflet/leaflet.js"></script>
+<script src="/static/vendor/leaflet-draw/leaflet.draw.js"></script>
+<script src="/static/vendor/togeojson/togeojson.umd.js"></script>
+<script>
+/* ===== Right panel: Leaflet map (guarded so a map failure can't break the form above) ===== */
+let map = null;
+let drawnItems = null;
+if (typeof L === 'undefined') {
+  document.getElementById('map').innerHTML = '<div style="padding:24px;font-size:14px;color:#721c24">Could not load the map library from <code>/static/vendor/</code>. The parameter form on the left still works.</div>';
+  document.getElementById('btnDraw').disabled = true;
+} else {
+map = L.map('map').setView([33.5, -115.5], 7);
 const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap' }).addTo(map);
 const esri = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, attribution: 'Esri World Imagery' });
 L.control.layers({ 'OSM': osm, 'Esri Imagery': esri }).addTo(map);
 L.control.scale().addTo(map);
 
-const drawnItems = new L.FeatureGroup().addTo(map);
-const drawControl = new L.DrawControl({ draw: { rectangle: true, polygon: false, polyline: false, circle: false, marker: false, circlemarker: false }, edit: { featureGroup: drawnItems } });
-map.addControl(drawControl);
-$('btnDraw').onclick = () => { new L.Draw.Rectangle(map).enable(); };
+drawnItems = new L.FeatureGroup().addTo(map);
+if (L.Draw && L.DrawControl) {
+  const drawControl = new L.DrawControl({ draw: { rectangle: true, polygon: false, polyline: false, circle: false, marker: false, circlemarker: false }, edit: { featureGroup: drawnItems } });
+  map.addControl(drawControl);
+  $('btnDraw').onclick = () => { new L.Draw.Rectangle(map).enable(); };
+} else {
+  $('btnDraw').disabled = true;
+}
 map.on(L.Draw.Event.CREATED, e => {
   drawnItems.clearLayers();
   const layer = e.layer; drawnItems.addLayer(layer);
@@ -137,6 +199,7 @@ map.on(L.Draw.Event.CREATED, e => {
   info.style.display = 'block';
   info.textContent = `Selected area center (${c.lat.toFixed(4)}, ${c.lng.toFixed(4)}), span ${Math.abs(b.getEast()-b.getWest()).toFixed(3)} x ${Math.abs(b.getNorth()-b.getSouth()).toFixed(3)} deg`;
 });
+} // end else (Leaflet present)
 
 const gnssLayers = {};   // name -> L layer
 let legendCtl = null, colorbarUrl = null;
@@ -147,6 +210,7 @@ function kmlColorToCss(kmlColor, fallback) {
   return '#' + r + g + b;
 }
 function addKmlTextToMap(text, name) {
+  if (!map || typeof toGeoJSON === 'undefined') return;
   const xml = new DOMParser().parseFromString(text, 'text/xml');
   let gj;
   try { gj = toGeoJSON.kml(xml); } catch (err) { console.error('KML parse failed', err); return; }
@@ -167,10 +231,10 @@ function addKmlTextToMap(text, name) {
       if (html) l.bindPopup(String(html).slice(0, 2000));
     }
   });
-  if (gnssLayers[name]) map.removeLayer(gnssLayers[name]);
+  if (gnssLayers[name] && map) map.removeLayer(gnssLayers[name]);
   gnssLayers[name] = layer;
-  if ($('ck_' + CSS.escape(name))?.checked !== false) layer.addTo(map);
-  try { map.flyToBounds(layer.getBounds(), { maxZoom: 10 }); } catch (e) {}
+  if (map && $('ck_' + CSS.escape(name))?.checked !== false) layer.addTo(map);
+  try { if (map) map.flyToBounds(layer.getBounds(), { maxZoom: 10 }); } catch (e) {}
 }
 async function loadKmlUrl(url, name) {
   const r = await fetch(url);
@@ -179,6 +243,7 @@ async function loadKmlUrl(url, name) {
 }
 function setLegend(url) {
   colorbarUrl = url;
+  if (!map) return;
   if (!legendCtl) {
     legendCtl = L.control({ position: 'bottomright' });
     legendCtl.onAdd = () => { const d = L.DomUtil.create('div', 'legend'); d.id = 'interpLegend'; return d; };
@@ -187,24 +252,8 @@ function setLegend(url) {
   const d = document.getElementById('interpLegend');
   if (d) d.innerHTML = url ? `<b>Interpolation</b><br><img src="${url}">` : '';
 }
-function updateVisibility() {
-  const m = $('kmltype_sel').value;
-  const show = (id, v) => { $(id).style.display = v ? '' : 'none'; };
-  show('f_epoch', m === 'getcoseismic' || m === 'getpostseismic');
-  show('f_epoch1', m === 'getdisplacement' || m === 'getmodel');
-  show('f_epoch2', m === 'getdisplacement' || m === 'getmodel');
-  show('f_ctwin', m === 'getcoseismic' || m === 'getpostseismic');
-  show('f_ptwin', m === 'getpostseismic');
-  show('f_dwin1', m === 'getdisplacement');
-  show('f_dwin2', m === 'getdisplacement');
-  show('w_ngl', m === 'getdisplacement');
-  show('w_interp', m === 'getdisplacement');
-  $('nglLink').style.display = m === 'getdisplacement' ? '' : 'none';
-  $('interpBox').style.display = (m === 'getdisplacement' && $('gs_interpolation').checked) ? '' : 'none';
-}
-$('kmltype_sel').onchange = updateVisibility;
-$('gs_interpolation').onchange = updateVisibility;
-updateVisibility();
+/* Model switching (MODEL_PARAMS / applyModel) lives in the standalone script
+   block above so it runs before — and independent of — the map libraries. */
 
 function extOf(url) {
   const tail = url.split('/').pop().split('?')[0];
@@ -212,9 +261,9 @@ function extOf(url) {
   return parts[parts.length - 1];
 }
 $('btnClear').onclick = () => {
-  Object.values(gnssLayers).forEach(l => map.removeLayer(l));
+  Object.values(gnssLayers).forEach(l => { if (map) map.removeLayer(l); });
   for (const k in gnssLayers) delete gnssLayers[k];
-  drawnItems.clearLayers();
+  if (drawnItems) drawnItems.clearLayers();
   $('outList').innerHTML = ''; $('outputs').style.display = 'none';
   setLegend(null);
   ['gs_latitude','gs_longitude','gs_width','gs_height'].forEach(id => $(id).value = '');
@@ -273,10 +322,10 @@ $('btnRun').onclick = async () => {
       }
       list.appendChild(row);
     }
-    if (hUrl) await loadKmlUrl(hUrl[0], hUrl[1]);
-    if (vUrl) await loadKmlUrl(vUrl[0], vUrl[1]);
+    if (hUrl && map) await loadKmlUrl(hUrl[0], hUrl[1]);
+    if (vUrl && map) await loadKmlUrl(vUrl[0], vUrl[1]);
     // interpolation image overlays
-    if (props.imagebounds) {
+    if (props.imagebounds && map && typeof L !== 'undefined' && L.imageOverlay) {
       const b = props.imagebounds; // [[south,west],[north,east]]
       for (const u of props.urls) {
         const ext = extOf(u);
@@ -290,7 +339,7 @@ $('btnRun').onclick = async () => {
       }
       const cb = firstColorbar || (firstPng ? firstPng[0].replace('.png', '_colorbar.png') : null);
       if (cb) setLegend(cb);
-      try { map.flyToBounds(b); } catch (e) {}
+      try { if (map) map.flyToBounds(b); } catch (e) {}
     }
   } catch (err) {
     console.error(err);
