@@ -177,14 +177,27 @@ L.control.layers({ 'OSM': osm, 'Esri Imagery': esri }).addTo(map);
 L.control.scale().addTo(map);
 
 drawnItems = new L.FeatureGroup().addTo(map);
-if (L.Draw && L.DrawControl) {
-  const drawControl = new L.DrawControl({ draw: { rectangle: true, polygon: false, polyline: false, circle: false, marker: false, circlemarker: false }, edit: { featureGroup: drawnItems } });
+let rectDrawer = null;
+const DrawCtl = (L.Control && L.Control.Draw) || L.DrawControl;
+if (L.Draw && L.Draw.Rectangle && DrawCtl) {
+  const drawControl = new DrawCtl({ draw: { rectangle: true, polygon: false, polyline: false, circle: false, marker: false, circlemarker: false }, edit: { featureGroup: drawnItems } });
   map.addControl(drawControl);
-  $('btnDraw').onclick = () => { new L.Draw.Rectangle(map).enable(); };
-} else {
-  $('btnDraw').disabled = true;
-}
+  // "Draw an area on map" button: toggles rectangle-draw mode on the map.
+  // Click once to start drawing, drag a rectangle, click again (or Esc) to cancel.
+  $('btnDraw').onclick = () => {
+    if (rectDrawer && rectDrawer.enabled && rectDrawer.enabled()) {
+      rectDrawer.disable();
+      rectDrawer = null;
+      $('btnDraw').textContent = '✏️ Draw an area on map';
+      return;
+    }
+    rectDrawer = new L.Draw.Rectangle(map);
+    rectDrawer.enable();
+    $('btnDraw').textContent = '❌ Cancel drawing (or press Esc)';
+  };
 map.on(L.Draw.Event.CREATED, e => {
+  if (rectDrawer) { rectDrawer.disable(); rectDrawer = null; }
+  $('btnDraw').textContent = '✏️ Draw an area on map';
   drawnItems.clearLayers();
   const layer = e.layer; drawnItems.addLayer(layer);
   const b = layer.getBounds();
@@ -197,6 +210,9 @@ map.on(L.Draw.Event.CREATED, e => {
   info.style.display = 'block';
   info.textContent = `Selected area center (${c.lat.toFixed(4)}, ${c.lng.toFixed(4)}), span ${Math.abs(b.getEast()-b.getWest()).toFixed(3)} x ${Math.abs(b.getNorth()-b.getSouth()).toFixed(3)} deg`;
 });
+} else {
+  $('btnDraw').disabled = true;
+}
 } // end else (Leaflet present)
 
 const gnssLayers = {};   // name -> L layer
