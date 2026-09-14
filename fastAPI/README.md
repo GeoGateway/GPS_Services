@@ -14,9 +14,12 @@ uv run uvicorn app:app --host 0.0.0.0 --port 8000 --reload
 
 ## Endpoints
 
+- `GET /map` and `GET /gpsservice/map` — online interface for the GNSS tools (two-panel split: left = model selection + parameters mirroring `reference/GNSS.vue`, right = Leaflet map). `/` redirects to `/map`.
 - `GET /gpsservice/test`
 - `GET /gpsservice/kml?function=...`
 - Static output files: `http://localhost:8000/static/<folder>/...`
+
+Open http://localhost:8000/map in a browser, pick a model (Velocities / Coseismic / Postseismic / Displacement / Model), draw a rectangle on the map (or type center lat/lon + spans), fill epochs/options, and press **Run**. KML vectors render on the map, tables/PNGs link under Outputs.
 
 Sample calls:
 
